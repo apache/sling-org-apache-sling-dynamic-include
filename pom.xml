@@ -36,9 +36,9 @@
     <description>Dynamic Include filter for Apache Sling</description>
 
     <scm>
-        <connection>scm:svn:https://svn.apache.org/repos/asf/sling/trunk/contrib/extensions/sling-dynamic-include</connection>
-        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/sling/trunk/contrib/extensions/sling-dynamic-include</developerConnection>
-        <url>http://svn.apache.org/viewvc/sling/trunk/contrib/extensions/sling-dynamic-include</url>
+        <connection>scm:git:https://gitbox.apache.org/repos/asf/sling-org-apache-sling-dynamic-include.git</conncetion>
+        <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/sling-org-apache-sling-dynamic-include.git</developerConnection>
+        <url>https://gitbox.apache.org/repos/asf?p=sling-org-apache-sling-dynamic-include.git</url>
     </scm>    
 
     <developers>
