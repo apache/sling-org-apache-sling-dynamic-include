@@ -55,6 +55,7 @@ import org.osgi.service.component.ComponentContext;
         @Property(name = Configuration.PROPERTY_COMPONENT_TTL, label = "Component TTL", description = "\"Time to live\" cache header for rendered component (in seconds)"),
         @Property(name = Configuration.PROPERTY_REQUIRED_HEADER, value = Configuration.DEFAULT_REQUIRED_HEADER, label = "Required header", description = "SDI will work only for requests with given header"),
         @Property(name = Configuration.PROPERTY_IGNORE_URL_PARAMS, cardinality = Integer.MAX_VALUE, label = "Ignore URL params", description = "SDI will process the request even if it contains configured GET parameters"),
+        @Property(name = Configuration.PROPERTY_DISABLE_IGNORE_URL_PARAMS, boolValue = Configuration.DEFAULT_DISABLE_IGNORE_URL_PARAMS, label = "Disable Ignore URL params check and Process all requests", description = "SDI will process all requests and discard ignore URL params check"),
         @Property(name = Configuration.PROPERTY_REWRITE_PATH, boolValue = Configuration.DEFAULT_REWRITE_DISABLED, label = "Include path rewriting", description = "Check to enable include path rewriting") })
 public class Configuration {
 
@@ -88,7 +89,11 @@ public class Configuration {
 
     static final String PROPERTY_IGNORE_URL_PARAMS = "include-filter.config.ignoreUrlParams";
 
+    static final String PROPERTY_DISABLE_IGNORE_URL_PARAMS = "include-filter.config.disable_ignoreUrlParams";
+
     static final String PROPERTY_REWRITE_PATH = "include-filter.config.rewrite";
+
+    static final boolean DEFAULT_DISABLE_IGNORE_URL_PARAMS = false;
 
     static final boolean DEFAULT_REWRITE_DISABLED = false;
 
@@ -109,6 +114,8 @@ public class Configuration {
     private String requiredHeader;
 
     private List<String> ignoreUrlParams;
+
+    private boolean disableIgnoreUrlParams;
 
     private boolean rewritePath;
 
@@ -132,6 +139,8 @@ public class Configuration {
         requiredHeader = PropertiesUtil.toString(properties.get(PROPERTY_REQUIRED_HEADER), DEFAULT_REQUIRED_HEADER);
         ignoreUrlParams = Arrays.asList(PropertiesUtil.toStringArray(properties.get(PROPERTY_IGNORE_URL_PARAMS),
                 new String[0]));
+        disableIgnoreUrlParams = PropertiesUtil.toBoolean(properties.get(PROPERTY_DISABLE_IGNORE_URL_PARAMS),
+                DEFAULT_DISABLE_IGNORE_URL_PARAMS);
         rewritePath = PropertiesUtil.toBoolean(properties.get(PROPERTY_REWRITE_PATH), DEFAULT_REWRITE_DISABLED);
     }
 
@@ -177,6 +186,10 @@ public class Configuration {
 
     public List<String> getIgnoreUrlParams() {
         return ignoreUrlParams;
+    }
+
+    public boolean isDisableIgnoreUrlParams() {
+        return disableIgnoreUrlParams;
     }
 
     public boolean isRewritePath() {
