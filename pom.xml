@@ -20,18 +20,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    
+
     <parent>
         <groupId>org.apache.sling</groupId>
         <artifactId>sling</artifactId>
         <version>26</version>
         <relativePath />
-    </parent>    
-    
+    </parent>
+
     <artifactId>org.apache.sling.dynamic-include</artifactId>
-    <version>3.1.0-SNAPSHOT</version>
+    <version>3.0.1-SNAPSHOT</version>
     <packaging>bundle</packaging>
-    
+
     <name>Apache Sling Dynamic Include</name>
     <description>Dynamic Include filter for Apache Sling</description>
 
@@ -40,13 +40,6 @@
         <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/sling-org-apache-sling-dynamic-include.git</developerConnection>
         <url>https://gitbox.apache.org/repos/asf?p=sling-org-apache-sling-dynamic-include.git</url>
     </scm>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <sling.url>http://localhost:4502/system/console</sling.url>
-        <sling.username>admin</sling.username>
-        <sling.password>admin</sling.password>
-    </properties>
 
     <developers>
         <developer>
@@ -79,12 +72,6 @@
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <extensions>true</extensions>
-                <configuration>
-                    <bundleFileName>${project.build.directory}/${project.build.finalName}.jar</bundleFileName>
-                    <user>${sling.username}</user>
-                    <password>${sling.password}</password>
-                    <slingUrl>${sling.url}</slingUrl>
-                </configuration>
             </plugin>
         </plugins>
     </build>
