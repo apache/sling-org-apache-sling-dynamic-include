@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import java.util.regex.Pattern;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.felix.scr.annotations.Activate;
@@ -45,7 +46,7 @@ import org.osgi.service.component.ComponentContext;
 @Properties({
         @Property(name = Constants.SERVICE_VENDOR, value = "The Apache Software Foundation"),
         @Property(name = Configuration.PROPERTY_FILTER_ENABLED, boolValue = Configuration.DEFAULT_FILTER_ENABLED, label = "Enabled", description = "Check to enable the filter"),
-        @Property(name = Configuration.PROPERTY_FILTER_PATH, value = Configuration.DEFAULT_FILTER_PATH, label = "Base path", description = "This SDI configuration will work only for this path"),
+        @Property(name = Configuration.PROPERTY_FILTER_PATH, value = Configuration.DEFAULT_FILTER_PATH, label = "Base path regular expression", description = "This SDI configuration will work only for paths matching this pattern"),
         @Property(name = Configuration.PROPERTY_FILTER_RESOURCE_TYPES, cardinality = Integer.MAX_VALUE, label = "Resource types", description = "Filter will replace components with selected resource types"),
         @Property(name = Configuration.PROPERTY_INCLUDE_TYPE, value = Configuration.DEFAULT_INCLUDE_TYPE, label = "Include type", description = "Type of generated include tags", options = {
                 @PropertyOption(name = "SSI", value = "Apache SSI"), @PropertyOption(name = "ESI", value = "ESI"),
@@ -60,7 +61,7 @@ public class Configuration {
 
     static final String PROPERTY_FILTER_PATH = "include-filter.config.path";
 
-    static final String DEFAULT_FILTER_PATH = "/content";
+    static final String DEFAULT_FILTER_PATH = "^/content/.*$";
 
     static final String PROPERTY_FILTER_ENABLED = "include-filter.config.enabled";
 
@@ -92,9 +93,9 @@ public class Configuration {
 
     static final boolean DEFAULT_REWRITE_DISABLED = false;
 
-    private boolean isEnabled;
+    static Pattern pathPattern;
 
-    private String path;
+    private boolean isEnabled;
 
     private String includeSelector;
 
@@ -115,7 +116,8 @@ public class Configuration {
     @Activate
     public void activate(ComponentContext context, Map<String, ?> properties) {
         isEnabled = PropertiesUtil.toBoolean(properties.get(PROPERTY_FILTER_ENABLED), DEFAULT_FILTER_ENABLED);
-        path = PropertiesUtil.toString(properties.get(PROPERTY_FILTER_PATH), DEFAULT_FILTER_PATH);
+        String pathPattern = PropertiesUtil.toString(properties.get(PROPERTY_FILTER_PATH), DEFAULT_FILTER_PATH);
+        Configuration.pathPattern = Pattern.compile(pathPattern);
         String[] resourceTypeList;
         resourceTypeList = PropertiesUtil.toStringArray(properties.get(PROPERTY_FILTER_RESOURCE_TYPES), new String[0]);
         for (int i = 0; i < resourceTypeList.length; i++) {
@@ -135,8 +137,8 @@ public class Configuration {
         rewritePath = PropertiesUtil.toBoolean(properties.get(PROPERTY_REWRITE_PATH), DEFAULT_REWRITE_DISABLED);
     }
 
-    public String getBasePath() {
-        return path;
+    public Pattern getBasePathPattern() {
+        return pathPattern;
     }
 
     public boolean hasIncludeSelector(SlingHttpServletRequest request) {

@@ -22,6 +22,7 @@ package org.apache.sling.dynamicinclude;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import java.util.regex.Matcher;
 import org.apache.commons.lang.StringUtils;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Reference;
@@ -48,7 +49,8 @@ public class ConfigurationWhiteboard {
 
     private boolean isEnabled(Configuration config, SlingHttpServletRequest request) {
         final String requestPath = request.getRequestPathInfo().getResourcePath();
-        return config.isEnabled() && StringUtils.startsWith(requestPath, config.getBasePath());
+        Matcher pathMatcher = config.getBasePathPattern().matcher(requestPath);
+        return config.isEnabled() && pathMatcher.matches();
     }
 
     protected void bindConfigs(final Configuration config) {
