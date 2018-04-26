@@ -30,8 +30,7 @@ Add following dependency to your project:
 Filter is delivered as a standard OSGi bundle. SDI is configured via the configuration factory called *SDI Configuration*. Following properties are available:
 
 * **Enabled** - enable SDI
-* **Base path** - given SDI configuration will be enabled only for this
-  path
+* **Base path regular expression** - This SDI configuration will work only for paths matching this pattern
 * **Resource types** - which components should be replaced with tags
 * **Include type** - type of include tag (Apache SSI, ESI or Javascript)
 * **Add comment** - adds debug comment: `<!-- SDI include (path: %s, resourceType: %s) -->` to every replaced component
