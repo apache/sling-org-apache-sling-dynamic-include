@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
 @Properties({
     @Property(name = Constants.SERVICE_VENDOR, value = "The Apache Software Foundation"),
     @Property(name = Configuration.PROPERTY_FILTER_ENABLED, boolValue = Configuration.DEFAULT_FILTER_ENABLED, label = "Enabled", description = "Check to enable the filter"),
-    @Property(name = Configuration.PROPERTY_FILTER_PATH, value = Configuration.DEFAULT_FILTER_PATH, label = "Base path regular expression", description = "This SDI configuration will work only for paths matching this pattern"),
+    @Property(name = Configuration.PROPERTY_FILTER_PATH, value = Configuration.DEFAULT_FILTER_PATH, label = "Base path regular expression", description = "This SDI configuration will work only for paths matching this value. If value starts with \"^\" sign, regex matching will be performed. Otherwise it will check for path prefix."),
     @Property(name = Configuration.PROPERTY_FILTER_RESOURCE_TYPES, cardinality = Integer.MAX_VALUE, label = "Resource types", description = "Filter will replace components with selected resource types"),
     @Property(name = Configuration.PROPERTY_INCLUDE_TYPE, value = Configuration.DEFAULT_INCLUDE_TYPE, label = "Include type", description = "Type of generated include tags", options = {
         @PropertyOption(name = "SSI", value = "Apache SSI"), @PropertyOption(name = "ESI", value = "ESI"),
