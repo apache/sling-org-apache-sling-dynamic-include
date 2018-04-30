@@ -99,7 +99,7 @@ public class Configuration {
 
   static final boolean DEFAULT_REWRITE_DISABLED = false;
 
-  static PathMatcher pathMatcher;
+  private PathMatcher pathMatcher;
 
   private boolean isEnabled;
 
