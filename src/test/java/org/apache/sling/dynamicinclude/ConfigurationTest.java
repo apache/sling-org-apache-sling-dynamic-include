@@ -7,6 +7,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.PatternSyntaxException;
+import org.apache.sling.dynamicinclude.pathmatcher.PrefixPathMatcher;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,7 +23,7 @@ public class ConfigurationTest {
   @Test(expected = PatternSyntaxException.class)
   public void shouldThrowExceptionWhenRegexisInvalid() throws Exception {
     Map<String, Object> properties = new HashMap<String, Object>();
-    properties.put(Configuration.PROPERTY_FILTER_PATH, "?");
+    properties.put(Configuration.PROPERTY_FILTER_PATH, "^(");
 
     tested.activate(null, properties);
   }
@@ -33,7 +34,7 @@ public class ConfigurationTest {
 
     tested.activate(null, properties);
 
-    assertThat(tested.getBasePathPattern().pattern(), is(Configuration.DEFAULT_FILTER_PATH));
+    assertThat(tested.getPathMatcher().getClass().isAssignableFrom(PrefixPathMatcher.class), is(true));
     assertThat(tested.getAddComment(), is(false));
     assertThat(tested.getIgnoreUrlParams().size(), is(0));
     assertThat(tested.getIncludeSelector(), is(Configuration.DEFAULT_FILTER_SELECTOR));
@@ -61,7 +62,7 @@ public class ConfigurationTest {
 
     tested.activate(null, properties);
 
-    assertThat(tested.getBasePathPattern().pattern(), is("/content/test/path"));
+    assertThat(tested.getPathMatcher().getClass().isAssignableFrom(PrefixPathMatcher.class), is(true));
     assertThat(tested.getAddComment(), is(true));
     assertThat(tested.getIgnoreUrlParams().size(), is(1));
     assertThat(tested.getIncludeSelector(), is("cache"));
