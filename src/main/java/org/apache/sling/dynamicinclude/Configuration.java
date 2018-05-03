@@ -146,10 +146,10 @@ public class Configuration {
   private PathMatcher choosePathMatcher(String pathPattern) {
     PathMatcher result;
     if (pathPattern.startsWith("^")) {
-      LOG.debug("Configured path value: {} is a regex experession. Picking RegexPathMatcher.", pathPattern);
+      LOG.debug("Configured path value: {} is a regexp - will use a RegexPathMatcher.", pathPattern);
       result = new RegexPathMatcher(pathPattern);
     } else {
-      LOG.debug("Configured path value: {} is not a regex experession. Picking PrefixPathMatcher.", pathPattern);
+      LOG.debug("Configured path value: {} is NOT a regexp - will use a PrefixPathMatcher.", pathPattern);
       result = new PrefixPathMatcher(pathPattern);
     }
     return result;
