@@ -39,11 +39,11 @@ import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.sling.SlingFilter;
 import org.apache.felix.scr.annotations.sling.SlingFilterScope;
 import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.request.RequestPathInfo;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceUtil;
 import org.apache.sling.dynamicinclude.generator.IncludeGenerator;
 import org.apache.sling.dynamicinclude.generator.IncludeGeneratorWhiteboard;
+import org.apache.sling.dynamicinclude.impl.UrlBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -160,24 +160,9 @@ public class IncludeTagFilter implements Filter {
     }
 
     private String buildUrl(Configuration config, SlingHttpServletRequest request) {
-        final boolean synthetic = ResourceUtil.isSyntheticResource(request.getResource());
         final Resource resource = request.getResource();
-        final StringBuilder builder = new StringBuilder();
-        final RequestPathInfo pathInfo = request.getRequestPathInfo();
-
-        final String resourcePath = pathInfo.getResourcePath();
-        builder.append(resourcePath);
-        if (pathInfo.getSelectorString() != null) {
-            builder.append('.').append(sanitize(pathInfo.getSelectorString()));
-        }
-        builder.append('.').append(config.getIncludeSelector());
-        builder.append('.').append(pathInfo.getExtension());
-        if (synthetic) {
-            builder.append('/').append(resource.getResourceType());
-        } else {
-            builder.append(sanitize(pathInfo.getSuffix()));
-        }
-        return builder.toString();
+        final boolean synthetic = ResourceUtil.isSyntheticResource(request.getResource());
+        return UrlBuilder.buildUrl(config.getIncludeSelector(), resource.getResourceType(), synthetic, request.getRequestPathInfo());
     }
 
     private static String sanitize(String path) {
