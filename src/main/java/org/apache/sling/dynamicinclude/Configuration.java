@@ -60,7 +60,8 @@ import org.slf4j.LoggerFactory;
     @Property(name = Configuration.PROPERTY_COMPONENT_TTL, label = "Component TTL", description = "\"Time to live\" cache header for rendered component (in seconds)"),
     @Property(name = Configuration.PROPERTY_REQUIRED_HEADER, value = Configuration.DEFAULT_REQUIRED_HEADER, label = "Required header", description = "SDI will work only for requests with given header"),
     @Property(name = Configuration.PROPERTY_IGNORE_URL_PARAMS, cardinality = Integer.MAX_VALUE, label = "Ignore URL params", description = "SDI will process the request even if it contains configured GET parameters"),
-    @Property(name = Configuration.PROPERTY_REWRITE_PATH, boolValue = Configuration.DEFAULT_REWRITE_DISABLED, label = "Include path rewriting", description = "Check to enable include path rewriting")})
+    @Property(name = Configuration.PROPERTY_REWRITE_PATH, boolValue = Configuration.DEFAULT_REWRITE_DISABLED, label = "Include path rewriting", description = "Check to enable include path rewriting"),
+    @Property(name= Configuration.NAME_HINT_PROPERTY_NAME, value=Configuration.NAME_HINT_VALUE)})
 public class Configuration {
 
   private static final Logger LOG = LoggerFactory.getLogger(Configuration.class);
@@ -96,6 +97,11 @@ public class Configuration {
   static final String PROPERTY_IGNORE_URL_PARAMS = "include-filter.config.ignoreUrlParams";
 
   static final String PROPERTY_REWRITE_PATH = "include-filter.config.rewrite";
+
+  static final String NAME_HINT_PROPERTY_NAME = "webconsole.configurationFactory.nameHint";
+
+  static final String NAME_HINT_VALUE = "{" + PROPERTY_INCLUDE_TYPE + "} for [{"
+            + PROPERTY_FILTER_RESOURCE_TYPES + "}] at path: {" + PROPERTY_FILTER_PATH + "}";
 
   static final boolean DEFAULT_REWRITE_DISABLED = false;
 
