@@ -19,15 +19,16 @@
 
 package org.apache.sling.dynamicinclude.impl;
 
+import java.util.Arrays;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.sling.api.request.RequestPathInfo;
-
-import java.util.Arrays;
+import org.apache.sling.dynamicinclude.Configuration;
 
 public final class UrlBuilder {
 
 
-    public static String buildUrl(String includeSelector, String resourceType, boolean synthetic, RequestPathInfo pathInfo) {
+    public static String buildUrl(String includeSelector, String resourceType, boolean synthetic, Configuration config, RequestPathInfo pathInfo) {
         final StringBuilder builder = new StringBuilder();
 
         final String resourcePath = pathInfo.getResourcePath();
@@ -42,6 +43,9 @@ public final class UrlBuilder {
         builder.append('.').append(pathInfo.getExtension());
         if (synthetic) {
             builder.append('/').append(resourceType);
+            if (config.hasExtensionSet()) {
+                builder.append('.').append(config.getExtension());
+            }
         } else {
             builder.append(StringUtils.defaultString(pathInfo.getSuffix()));
         }

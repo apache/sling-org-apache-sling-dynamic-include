@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-@Version("4.0.0")
+@Version("4.1.0")
 package org.apache.sling.dynamicinclude;
 import aQute.bnd.annotation.Version;
 

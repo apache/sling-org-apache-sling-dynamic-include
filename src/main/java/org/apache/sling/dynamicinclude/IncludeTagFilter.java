@@ -161,8 +161,9 @@ public class IncludeTagFilter implements Filter {
 
     private String buildUrl(Configuration config, SlingHttpServletRequest request) {
         final Resource resource = request.getResource();
+
         final boolean synthetic = ResourceUtil.isSyntheticResource(request.getResource());
-        return UrlBuilder.buildUrl(config.getIncludeSelector(), resource.getResourceType(), synthetic, request.getRequestPathInfo());
+        return UrlBuilder.buildUrl(config.getIncludeSelector(), resource.getResourceType(), synthetic, config, request.getRequestPathInfo());
     }
 
     private static String sanitize(String path) {

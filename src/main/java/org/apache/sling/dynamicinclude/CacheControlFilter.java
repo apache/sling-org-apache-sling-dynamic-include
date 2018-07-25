@@ -39,6 +39,8 @@ import org.slf4j.LoggerFactory;
 @SlingFilter(scope = SlingFilterScope.REQUEST, order = 0)
 public class CacheControlFilter implements Filter {
 
+    private static final String HEADER_DATE = "Date";
+
     private static final String HEADER_CACHE_CONTROL = "Cache-Control";
 
     private static final Logger LOG = LoggerFactory.getLogger(CacheControlFilter.class);
@@ -57,6 +59,9 @@ public class CacheControlFilter implements Filter {
             SlingHttpServletResponse slingResponse = (SlingHttpServletResponse) response;
             slingResponse.setHeader(HEADER_CACHE_CONTROL, "max-age=" + config.getTtl());
             LOG.debug("set \"{}: max-age={}\" to {}", HEADER_CACHE_CONTROL, config.getTtl(), resourceType);
+            if (!slingResponse.containsHeader(HEADER_DATE)) {
+                slingResponse.setDateHeader(HEADER_DATE, System.currentTimeMillis());
+            }
         }
 
         chain.doFilter(request, response);
