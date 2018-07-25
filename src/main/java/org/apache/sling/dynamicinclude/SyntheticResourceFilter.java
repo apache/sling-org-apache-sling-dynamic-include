@@ -37,6 +37,7 @@ import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.request.RequestDispatcherOptions;
+import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceUtil;
 import org.apache.sling.engine.EngineConstants;
 import org.osgi.framework.Constants;
@@ -60,19 +61,23 @@ public class SyntheticResourceFilter implements Filter {
         final Configuration config = configurationWhiteboard.getConfiguration(slingRequest, resourceType);
 
         if (config == null || !config.hasIncludeSelector(slingRequest)
-                || !ResourceUtil.isSyntheticResource(slingRequest.getResource())) {
+                || !ResourceUtil.isSyntheticResource(slingRequest.getResource())
+                || (config.hasExtensionSet() && !config.hasExtension(slingRequest))) {
             chain.doFilter(request, response);
             return;
         }
 
         final RequestDispatcherOptions options = new RequestDispatcherOptions();
         options.setForceResourceType(resourceType);
-        final RequestDispatcher dispatcher = slingRequest.getRequestDispatcher(slingRequest.getResource(), options);
+        String resourcePath = StringUtils.substringBefore(slingRequest.getRequestPathInfo().getResourcePath(), ".");
+        Resource resource = slingRequest.getResourceResolver().resolve(resourcePath);
+        final RequestDispatcher dispatcher = slingRequest.getRequestDispatcher(resource, options);
         dispatcher.forward(request, response);
     }
 
-    private static String getResourceTypeFromSuffix(SlingHttpServletRequest request) {
-        final String suffix = request.getRequestPathInfo().getSuffix();
+    private static String getResourceTypeFromSuffix(final SlingHttpServletRequest request) {
+        String suffix = request.getRequestPathInfo().getSuffix();
+        suffix = StringUtils.substringBeforeLast(suffix, ".");
         return StringUtils.removeStart(suffix, "/");
     }
 

@@ -21,6 +21,8 @@ package org.apache.sling.dynamicinclude.impl;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.sling.api.request.RequestPathInfo;
+import org.apache.sling.dynamicinclude.Configuration;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -29,6 +31,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.reset;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UrlBuilderTest {
@@ -36,13 +39,16 @@ public class UrlBuilderTest {
     @Mock
     private RequestPathInfo requestPathInfo;
 
+    @Mock
+    private Configuration config;
+
     @Test
     public void shouldAppendTheIncludeSelectorToUrlWithNoSelectors() {
         givenAnHtmlRequestForResource("/resource/path");
         withSelectorString(null);
         boolean isSyntheticResource = false;
 
-        String actualResult = UrlBuilder.buildUrl("include", "apps/example/resource/type", isSyntheticResource, requestPathInfo);
+        String actualResult = UrlBuilder.buildUrl("include", "apps/example/resource/type", isSyntheticResource, config, requestPathInfo);
 
         assertThat(actualResult, is("/resource/path.include.html"));
     }
@@ -53,7 +59,7 @@ public class UrlBuilderTest {
         withSelectorString("foo.bar.baz");
         boolean isSyntheticResource = false;
 
-        String actualResult = UrlBuilder.buildUrl("include", "apps/example/resource/type", isSyntheticResource, requestPathInfo);
+        String actualResult = UrlBuilder.buildUrl("include", "apps/example/resource/type", isSyntheticResource, config, requestPathInfo);
 
         assertThat(actualResult, is("/resource/path.foo.bar.baz.include.html"));
     }
@@ -64,7 +70,7 @@ public class UrlBuilderTest {
         withSelectorString("foo.2.31");
         boolean isSyntheticResource = false;
 
-        String actualResult = UrlBuilder.buildUrl("include", "apps/example/resource/type", isSyntheticResource, requestPathInfo);
+        String actualResult = UrlBuilder.buildUrl("include", "apps/example/resource/type", isSyntheticResource, config, requestPathInfo);
 
         assertThat(actualResult, is("/resource/path.foo.2.31.include.html"));
     }
@@ -75,7 +81,7 @@ public class UrlBuilderTest {
         withSelectorString("foo.include");
         boolean isSyntheticResource = false;
 
-        String actualResult = UrlBuilder.buildUrl("include", "apps/example/resource/type", isSyntheticResource, requestPathInfo);
+        String actualResult = UrlBuilder.buildUrl("include", "apps/example/resource/type", isSyntheticResource, config, requestPathInfo);
 
         assertThat(actualResult, is("/resource/path.foo.include.html"));
     }
@@ -86,7 +92,7 @@ public class UrlBuilderTest {
         withSelectorString("longerSelectorThatHappensToContainTheIncludeSelector");
         boolean isSyntheticResource = false;
 
-        String actualResult = UrlBuilder.buildUrl("IncludeSelector", "apps/example/resource/type", isSyntheticResource, requestPathInfo);
+        String actualResult = UrlBuilder.buildUrl("IncludeSelector", "apps/example/resource/type", isSyntheticResource, config, requestPathInfo);
 
         assertThat(actualResult, is("/resource/path.longerSelectorThatHappensToContainTheIncludeSelector.IncludeSelector.html"));
     }
@@ -97,9 +103,24 @@ public class UrlBuilderTest {
         withSelectorString("foo.include");
         boolean isSyntheticResource = true;
 
-        String actualResult = UrlBuilder.buildUrl("include", "apps/example/resource/type", isSyntheticResource, requestPathInfo);
+        String actualResult = UrlBuilder.buildUrl("include", "apps/example/resource/type", isSyntheticResource, config, requestPathInfo);
 
         assertThat(actualResult, is("/resource/path.foo.include.html/apps/example/resource/type"));
+    }
+    
+    @Test
+    public void shouldAppendExtensionForSyntheticResources() {
+        givenAnHtmlRequestForResource("/resource/path");
+        withSelectorString("foo.include");
+
+        when(config.hasExtensionSet()).thenReturn(true);
+        when(config.getExtension()).thenReturn("sdi");
+
+        boolean isSyntheticResource = true;
+
+        String actualResult = UrlBuilder.buildUrl("include", "apps/example/resource/type", isSyntheticResource, config, requestPathInfo);
+
+        assertThat(actualResult, is("/resource/path.foo.include.html/apps/example/resource/type.sdi"));
     }
 
     private void givenAnHtmlRequestForResource(String resourcePath) {

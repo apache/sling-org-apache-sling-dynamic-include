@@ -57,6 +57,7 @@ import org.slf4j.LoggerFactory;
         @PropertyOption(name = "JSI", value = "Javascript")}),
     @Property(name = Configuration.PROPERTY_ADD_COMMENT, boolValue = Configuration.DEFAULT_ADD_COMMENT, label = "Add comment", description = "Add comment to included components"),
     @Property(name = Configuration.PROPERTY_FILTER_SELECTOR, value = Configuration.DEFAULT_FILTER_SELECTOR, label = "Filter selector", description = "Selector used to mark included resources"),
+    @Property(name = Configuration.PROPERTY_EXTENSION, value = Configuration.DEFAULT_EXTENSION, label = "Extension", description = "Extension to append to virtual resources to make caching possible"),
     @Property(name = Configuration.PROPERTY_COMPONENT_TTL, label = "Component TTL", description = "\"Time to live\" cache header for rendered component (in seconds)"),
     @Property(name = Configuration.PROPERTY_REQUIRED_HEADER, value = Configuration.DEFAULT_REQUIRED_HEADER, label = "Required header", description = "SDI will work only for requests with given header"),
     @Property(name = Configuration.PROPERTY_IGNORE_URL_PARAMS, cardinality = Integer.MAX_VALUE, label = "Ignore URL params", description = "SDI will process the request even if it contains configured GET parameters"),
@@ -79,6 +80,10 @@ public class Configuration {
   static final String PROPERTY_FILTER_SELECTOR = "include-filter.config.selector";
 
   static final String DEFAULT_FILTER_SELECTOR = "nocache";
+
+  static final String PROPERTY_EXTENSION = "include-filter.config.extension";
+
+  static final String DEFAULT_EXTENSION = "";
 
   static final String PROPERTY_COMPONENT_TTL = "include-filter.config.ttl";
 
@@ -111,6 +116,8 @@ public class Configuration {
 
   private String includeSelector;
 
+  private String extension;
+
   private int ttl;
 
   private List<String> resourceTypes;
@@ -140,6 +147,7 @@ public class Configuration {
     this.resourceTypes = Arrays.asList(resourceTypeList);
 
     includeSelector = PropertiesUtil.toString(properties.get(PROPERTY_FILTER_SELECTOR), DEFAULT_FILTER_SELECTOR);
+    extension = PropertiesUtil.toString(properties.get(PROPERTY_EXTENSION), DEFAULT_EXTENSION);
     ttl = PropertiesUtil.toInteger(properties.get(PROPERTY_COMPONENT_TTL), -1);
     addComment = PropertiesUtil.toBoolean(properties.get(PROPERTY_ADD_COMMENT), DEFAULT_ADD_COMMENT);
     includeTypeName = PropertiesUtil.toString(properties.get(PROPERTY_INCLUDE_TYPE), DEFAULT_INCLUDE_TYPE);
@@ -171,6 +179,19 @@ public class Configuration {
 
   public String getIncludeSelector() {
     return includeSelector;
+  }
+
+  public boolean hasExtension(final SlingHttpServletRequest request) {
+    final String suffix = request.getRequestPathInfo().getSuffix();
+    return suffix.endsWith("." + this.extension);
+  }
+
+  public boolean hasExtensionSet() {
+    return StringUtils.isNotBlank(this.extension);
+  }
+
+  public String getExtension() {
+    return this.extension;
   }
 
   public boolean hasTtlSet() {
