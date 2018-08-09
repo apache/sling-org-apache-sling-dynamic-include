@@ -26,7 +26,7 @@ Add following dependency to your project:
     <dependency>
 	    <groupId>org.apache.sling</groupId>
 	    <artifactId>dynamic-include</artifactId>
-	    <version>2.2.0</version>
+	    <version>3.1.2</version>
     </dependency>
 
 ## Configuration
@@ -34,7 +34,7 @@ Add following dependency to your project:
 Filter is delivered as a standard OSGi bundle. SDI is configured via the configuration factory called *SDI Configuration*. Following properties are available:
 
 * **Enabled** - enable SDI
-* **Base path** - This SDI configuration will work only for paths matching this value. If value starts with "^" sign, regex matching will be performed. Otherwise it will check for path prefix.'
+* **Base path** - This SDI configuration will work only for paths matching this value. If value starts with "^" sign, regex matching will be performed. Otherwise it will check for path prefix. (Available since 3.1.0)
 * **Resource types** - which components should be replaced with tags
 * **Include type** - type of include tag (Apache SSI, ESI or Javascript)
 * **Add comment** - adds debug comment: `<!-- SDI include (path: %s, resourceType: %s) -->` to every replaced component
@@ -127,7 +127,7 @@ In this case, component is replaced with include tag, and `nocache` selector is 
     
 If the filter gets request with selector it'll pass it (using `doChain`) further without taking any action.
 
-![Plain include](https://raw.github.com/Cognifide/Sling-Dynamic-Include/master/src/main/doc/plain-include.png)
+![Plain include](src/main/doc/plain_include.png)
 
 There are also components which are created from so-called synthetic resources. Synthetic resource have some resourceType and path, but they don't have any node is JCR repository. An example is
 
@@ -150,6 +150,20 @@ Selector is necessary, because otherwise filter would again replace component wi
 * See the [Apache Sling website](http://sling.apache.org/) for the Sling reference documentation. Apache Sling, Apache and Sling are trademarks of the [Apache Software Foundation](http://apache.org).
 
 # Release notes
+
+## 3.1.2
+
+- Introduced readable names for SDI configuration entries in the OSGi console ([SLING-7695](https://issues.apache.org/jira/browse/SLING-7695))
+- Fixed a bug where the selector configured for use with SDI was added multiple times to the same selector string ([SLING-7742](https://issues.apache.org/jira/browse/SLING-7742))
+- Introduced a mechanism that allows synthetic resources included via SDI to be cached by the AEM Dispatcher ([SLING-7785](https://issues.apache.org/jira/browse/SLING-7785))
+
+## 3.1.0
+
+- Regular expression matching can be used when configuring resource paths ([SLING-7621](https://issues.apache.org/jira/browse/SLING-7621))
+
+## 3.0.0
+
+Sling Dynamic Include donated to the Apache Sling project ([SLING-5594](https://issues.apache.org/jira/browse/SLING-5594)), repackaged and released ([SLING-6301](https://issues.apache.org/jira/browse/SLING-6301))
 
 ## 2.2.0
 
