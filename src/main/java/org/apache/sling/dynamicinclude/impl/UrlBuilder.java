@@ -47,7 +47,9 @@ public final class UrlBuilder {
                 builder.append('.').append(config.getExtension());
             }
         } else {
-            builder.append(StringUtils.defaultString(pathInfo.getSuffix()));
+            if (config.isAppendSuffix()) {
+                builder.append(StringUtils.defaultString(pathInfo.getSuffix()));
+            }
         }
         return builder.toString();
     }

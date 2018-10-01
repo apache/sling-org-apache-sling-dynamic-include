@@ -107,6 +107,20 @@ public class UrlBuilderTest {
 
         assertThat(actualResult, is("/resource/path.foo.include.html/apps/example/resource/type"));
     }
+
+    @Test
+    public void shouldAppendSuffixWhenRequestedByDefault() {
+        givenAnHtmlRequestForResource("/resource/path");
+        withSelectorString("foo.include");
+        withSuffixString("/suffix/to/some/other/information");
+        boolean isSyntheticResource = false;
+
+        when(config.isAppendSuffix()).thenReturn(true);
+
+        String actualResult = UrlBuilder.buildUrl("include", "apps/example/resource/type", isSyntheticResource, config, requestPathInfo);
+
+        assertThat(actualResult, is("/resource/path.foo.include.html/suffix/to/some/other/information"));
+    }
     
     @Test
     public void shouldAppendExtensionForSyntheticResources() {
@@ -131,5 +145,9 @@ public class UrlBuilderTest {
     private void withSelectorString(String selectorString) {
         when(requestPathInfo.getSelectorString()).thenReturn(selectorString);
         when(requestPathInfo.getSelectors()).thenReturn(StringUtils.defaultString(selectorString).split("\\."));
+    }
+
+    private void withSuffixString(String suffixString) {
+        when(requestPathInfo.getSuffix()).thenReturn(suffixString);
     }
 }

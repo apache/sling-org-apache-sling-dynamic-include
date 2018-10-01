@@ -62,6 +62,7 @@ import org.slf4j.LoggerFactory;
     @Property(name = Configuration.PROPERTY_REQUIRED_HEADER, value = Configuration.DEFAULT_REQUIRED_HEADER, label = "Required header", description = "SDI will work only for requests with given header"),
     @Property(name = Configuration.PROPERTY_IGNORE_URL_PARAMS, cardinality = Integer.MAX_VALUE, label = "Ignore URL params", description = "SDI will process the request even if it contains configured GET parameters"),
     @Property(name = Configuration.PROPERTY_REWRITE_PATH, boolValue = Configuration.DEFAULT_REWRITE_DISABLED, label = "Include path rewriting", description = "Check to enable include path rewriting"),
+    @Property(name = Configuration.PROPERTY_APPEND_SUFFIX, boolValue = Configuration.DEFAULT_APPEND_SUFFIX, label = "Append suffix to dynamic includes", description = "Check to append the suffix of the parent request to the dynamic include."),
     @Property(name= Configuration.NAME_HINT_PROPERTY_NAME, value=Configuration.NAME_HINT_VALUE)})
 public class Configuration {
 
@@ -110,6 +111,10 @@ public class Configuration {
 
   static final boolean DEFAULT_REWRITE_DISABLED = false;
 
+  static final String PROPERTY_APPEND_SUFFIX = "include-filter.config.appendSuffix";
+
+  static final boolean DEFAULT_APPEND_SUFFIX = true;
+
   private PathMatcher pathMatcher;
 
   private boolean isEnabled;
@@ -131,6 +136,8 @@ public class Configuration {
   private List<String> ignoreUrlParams;
 
   private boolean rewritePath;
+
+  private boolean appendSuffix;
 
   @Activate
   public void activate(ComponentContext context, Map<String, ?> properties) {
@@ -155,6 +162,7 @@ public class Configuration {
     ignoreUrlParams = Arrays.asList(PropertiesUtil.toStringArray(properties.get(PROPERTY_IGNORE_URL_PARAMS),
         new String[0]));
     rewritePath = PropertiesUtil.toBoolean(properties.get(PROPERTY_REWRITE_PATH), DEFAULT_REWRITE_DISABLED);
+    appendSuffix = PropertiesUtil.toBoolean(properties.get(PROPERTY_APPEND_SUFFIX), DEFAULT_APPEND_SUFFIX);
   }
 
   private PathMatcher choosePathMatcher(String pathPattern) {
@@ -228,5 +236,9 @@ public class Configuration {
 
   public boolean isRewritePath() {
     return rewritePath;
+  }
+
+  public boolean isAppendSuffix() {
+      return appendSuffix;
   }
 }
