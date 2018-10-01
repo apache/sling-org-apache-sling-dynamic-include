@@ -30,8 +30,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UrlBuilderTest {
@@ -120,6 +119,21 @@ public class UrlBuilderTest {
         String actualResult = UrlBuilder.buildUrl("include", "apps/example/resource/type", isSyntheticResource, config, requestPathInfo);
 
         assertThat(actualResult, is("/resource/path.foo.include.html/suffix/to/some/other/information"));
+    }
+
+    @Test
+    public void shouldNotAppendSuffixWhenConfigured() {
+        givenAnHtmlRequestForResource("/resource/path");
+        withSelectorString("foo.include");
+        withSuffixString("/suffix/to/some/other/information");
+        boolean isSyntheticResource = false;
+
+        when(config.isAppendSuffix()).thenReturn(false);
+
+        String actualResult = UrlBuilder.buildUrl("include", "apps/example/resource/type", isSyntheticResource, config, requestPathInfo);
+
+        verify(requestPathInfo,times(0)).getSuffix();
+        assertThat(actualResult, is("/resource/path.foo.include.html"));
     }
     
     @Test
