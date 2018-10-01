@@ -30,8 +30,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UrlBuilderTest {
@@ -107,6 +106,35 @@ public class UrlBuilderTest {
 
         assertThat(actualResult, is("/resource/path.foo.include.html/apps/example/resource/type"));
     }
+
+    @Test
+    public void shouldAppendSuffixWhenRequestedByDefault() {
+        givenAnHtmlRequestForResource("/resource/path");
+        withSelectorString("foo.include");
+        withSuffixString("/suffix/to/some/other/information");
+        boolean isSyntheticResource = false;
+
+        when(config.isAppendSuffix()).thenReturn(true);
+
+        String actualResult = UrlBuilder.buildUrl("include", "apps/example/resource/type", isSyntheticResource, config, requestPathInfo);
+
+        assertThat(actualResult, is("/resource/path.foo.include.html/suffix/to/some/other/information"));
+    }
+
+    @Test
+    public void shouldNotAppendSuffixWhenConfigured() {
+        givenAnHtmlRequestForResource("/resource/path");
+        withSelectorString("foo.include");
+        withSuffixString("/suffix/to/some/other/information");
+        boolean isSyntheticResource = false;
+
+        when(config.isAppendSuffix()).thenReturn(false);
+
+        String actualResult = UrlBuilder.buildUrl("include", "apps/example/resource/type", isSyntheticResource, config, requestPathInfo);
+
+        verify(requestPathInfo,times(0)).getSuffix();
+        assertThat(actualResult, is("/resource/path.foo.include.html"));
+    }
     
     @Test
     public void shouldAppendExtensionForSyntheticResources() {
@@ -131,5 +159,9 @@ public class UrlBuilderTest {
     private void withSelectorString(String selectorString) {
         when(requestPathInfo.getSelectorString()).thenReturn(selectorString);
         when(requestPathInfo.getSelectors()).thenReturn(StringUtils.defaultString(selectorString).split("\\."));
+    }
+
+    private void withSuffixString(String suffixString) {
+        when(requestPathInfo.getSuffix()).thenReturn(suffixString);
     }
 }
