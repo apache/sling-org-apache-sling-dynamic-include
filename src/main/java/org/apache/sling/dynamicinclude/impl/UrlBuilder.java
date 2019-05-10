@@ -55,6 +55,9 @@ public final class UrlBuilder {
     }
 
     private static boolean includeSelectorNotAlreadyPresent(String[] currentSelectors, String includeSelector) {
+        if (includeSelector.isEmpty()) {
+            return false;
+        }
         return !Arrays.asList(currentSelectors).contains(includeSelector);
     }
 }
