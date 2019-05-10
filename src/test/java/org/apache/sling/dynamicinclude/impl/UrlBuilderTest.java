@@ -53,6 +53,39 @@ public class UrlBuilderTest {
     }
 
     @Test
+    public void shouldNotAppendTheIncludeSelectorToUrlWhenNotSetAndAppendRequestPathInfoSelectorWhenNotSet() {
+        givenAnHtmlRequestForResource("/resource/path");
+        withSelectorString(null);
+        boolean isSyntheticResource = false;
+
+        String actualResult = UrlBuilder.buildUrl("", "apps/example/resource/type", isSyntheticResource, config, requestPathInfo);
+
+        assertThat(actualResult, is("/resource/path.html"));
+    }
+
+    @Test
+    public void shouldNotAppendTheIncludeSelectorToUrlWhenNotSetAndAppendRequestPathInfoSelectorWhenSet() {
+        givenAnHtmlRequestForResource("/resource/path");
+        withSelectorString("foo.bar.baz");
+        boolean isSyntheticResource = false;
+
+        String actualResult = UrlBuilder.buildUrl("", "apps/example/resource/type", isSyntheticResource, config, requestPathInfo);
+
+        assertThat(actualResult, is("/resource/path.foo.bar.baz.html"));
+    }
+
+    @Test
+    public void shouldAppendTheIncludeSelectorToUrlWhenSetAndNotAppendRequestPathInfoSelectorWhenNotSet() {
+        givenAnHtmlRequestForResource("/resource/path");
+        withSelectorString(null);
+        boolean isSyntheticResource = false;
+
+        String actualResult = UrlBuilder.buildUrl("include", "apps/example/resource/type", isSyntheticResource, config, requestPathInfo);
+
+        assertThat(actualResult, is("/resource/path.include.html"));
+    }
+
+    @Test
     public void shouldAppendTheIncludeSelectorToUrlThatAlreadyContainsOtherSelectors() {
         givenAnHtmlRequestForResource("/resource/path");
         withSelectorString("foo.bar.baz");
@@ -135,7 +168,7 @@ public class UrlBuilderTest {
         verify(requestPathInfo,times(0)).getSuffix();
         assertThat(actualResult, is("/resource/path.foo.include.html"));
     }
-    
+
     @Test
     public void shouldAppendExtensionForSyntheticResources() {
         givenAnHtmlRequestForResource("/resource/path");
