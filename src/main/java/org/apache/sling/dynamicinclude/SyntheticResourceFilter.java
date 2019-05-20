@@ -47,7 +47,7 @@ import org.osgi.framework.Constants;
 @Properties({
         @Property(name = Constants.SERVICE_VENDOR, value = "The Apache Software Foundation"),
         @Property(name = EngineConstants.SLING_FILTER_SCOPE, value = EngineConstants.FILTER_SCOPE_REQUEST, propertyPrivate = true),
-        @Property(name = Constants.SERVICE_RANKING, intValue = Integer.MIN_VALUE, propertyPrivate = false), })
+        @Property(name = Constants.SERVICE_RANKING, intValue = Integer.MIN_VALUE, propertyPrivate = false) })
 public class SyntheticResourceFilter implements Filter {
 
     @Reference
