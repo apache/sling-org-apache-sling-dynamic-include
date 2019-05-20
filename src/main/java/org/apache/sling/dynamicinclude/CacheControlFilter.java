@@ -36,7 +36,7 @@ import org.apache.sling.api.SlingHttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@SlingFilter(scope = SlingFilterScope.REQUEST, order = 0)
+@SlingFilter(scope = {SlingFilterScope.REQUEST, SlingFilterScope.FORWARD}, order = 0)
 public class CacheControlFilter implements Filter {
 
     private static final String HEADER_DATE = "Date";
