@@ -19,7 +19,7 @@
 
 package org.apache.sling.dynamicinclude.generator.types;
 
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.dynamicinclude.generator.IncludeGenerator;
@@ -41,7 +41,7 @@ public class EsiGenerator implements IncludeGenerator {
     public String getInclude(String url) {
         StringBuffer buf = new StringBuffer();
         buf.append("<esi:include src=\"");
-        buf.append(StringEscapeUtils.escapeHtml(url));
+        buf.append(StringEscapeUtils.escapeHtml4(url));
         buf.append("\"/>");
         return buf.toString();
     }

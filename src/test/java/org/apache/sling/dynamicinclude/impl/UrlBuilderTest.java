@@ -19,7 +19,7 @@
 
 package org.apache.sling.dynamicinclude.impl;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.request.RequestPathInfo;
 import org.apache.sling.dynamicinclude.Configuration;
 import org.junit.Before;

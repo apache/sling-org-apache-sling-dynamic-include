@@ -18,7 +18,7 @@
  */
 package org.apache.sling.dynamicinclude.pathmatcher;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class PrefixPathMatcher implements PathMatcher {
 

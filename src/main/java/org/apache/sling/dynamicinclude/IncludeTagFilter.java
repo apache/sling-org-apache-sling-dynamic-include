@@ -33,8 +33,8 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.sling.SlingFilter;
 import org.apache.felix.scr.annotations.sling.SlingFilterScope;
@@ -87,7 +87,7 @@ public class IncludeTagFilter implements Filter {
         }
 
         if (config.getAddComment()) {
-            writer.append(String.format(COMMENT, StringEscapeUtils.escapeHtml(url), resourceType));
+            writer.append(String.format(COMMENT, StringEscapeUtils.escapeHtml4(url), resourceType));
         }
 
         // Only write the includes markup if the required, configurable request

@@ -21,7 +21,7 @@ package org.apache.sling.dynamicinclude.impl;
 
 import java.util.Arrays;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.request.RequestPathInfo;
 import org.apache.sling.dynamicinclude.Configuration;
 

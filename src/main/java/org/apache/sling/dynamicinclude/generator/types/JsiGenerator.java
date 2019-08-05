@@ -26,7 +26,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Service;
@@ -81,7 +81,7 @@ public class JsiGenerator implements IncludeGenerator {
             divName = "dynamic_include_filter_div_" + divId++;
         }
 
-        return template.replace(UUID_FIELD, divName).replace(URL_FIELD, StringEscapeUtils.escapeJavaScript(url));
+        return template.replace(UUID_FIELD, divName).replace(URL_FIELD, StringEscapeUtils.escapeEcmaScript(url));
     }
 
     private void readTemplateFromUrl(URL url) {
