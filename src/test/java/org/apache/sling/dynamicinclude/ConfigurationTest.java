@@ -24,40 +24,42 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.PatternSyntaxException;
 import org.apache.sling.dynamicinclude.pathmatcher.PrefixPathMatcher;
+import org.apache.sling.testing.mock.osgi.junit.OsgiContext;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 public class ConfigurationTest {
 
   private Configuration tested;
+  
+  @Rule
+  public final OsgiContext context = new OsgiContext();
 
   @Before
   public void setUp() {
     tested = new Configuration();
   }
 
-  @Test(expected = PatternSyntaxException.class)
+  @Test(expected = RuntimeException.class)
   public void shouldThrowExceptionWhenRegexisInvalid() throws Exception {
-    Map<String, Object> properties = new HashMap<String, Object>();
-    properties.put(Configuration.PROPERTY_FILTER_PATH, "^(");
-
-    tested.activate(null, properties);
+      
+    context.registerInjectActivateService(tested, "include-filter.config.path", "^(");
   }
 
   @Test
   public void shouldSetDefaultValuesWhenPropertiesAreEmpty() throws Exception {
     Map<String, Object> properties = new HashMap<String, Object>();
 
-    tested.activate(null, properties);
+    context.registerInjectActivateService(tested, properties);
 
     assertThat(tested.getPathMatcher().getClass().isAssignableFrom(PrefixPathMatcher.class), is(true));
     assertThat(tested.getAddComment(), is(false));
     assertThat(tested.getIgnoreUrlParams().size(), is(0));
-    assertThat(tested.getIncludeSelector(), is(Configuration.DEFAULT_FILTER_SELECTOR));
-    assertThat(tested.getIncludeTypeName(), is(Configuration.DEFAULT_INCLUDE_TYPE));
-    assertThat(tested.getRequiredHeader(), is(Configuration.DEFAULT_REQUIRED_HEADER));
+    assertThat(tested.getIncludeSelector(), is("nocache"));
+    assertThat(tested.getIncludeTypeName(), is("SSI"));
+    assertThat(tested.getRequiredHeader(), is("Server-Agent=Communique-Dispatcher"));
     assertThat(tested.getTtl(), is(-1));
     assertThat(tested.isEnabled(), is(false));
     assertThat(tested.hasTtlSet(), is(false));
@@ -67,18 +69,18 @@ public class ConfigurationTest {
   @Test
   public void shouldSetConfigurationValues() throws Exception {
     Map<String, Object> properties = new HashMap<String, Object>();
-    properties.put(Configuration.PROPERTY_FILTER_PATH, "/content/test/path");
-    properties.put(Configuration.PROPERTY_INCLUDE_TYPE, "ESI");
-    properties.put(Configuration.PROPERTY_ADD_COMMENT, true);
-    properties.put(Configuration.PROPERTY_COMPONENT_TTL, 60);
-    properties.put(Configuration.PROPERTY_FILTER_ENABLED, true);
-    properties.put(Configuration.PROPERTY_FILTER_RESOURCE_TYPES, new String[]{"test/resource/type"});
-    properties.put(Configuration.PROPERTY_REQUIRED_HEADER, "CustomHeader: value");
-    properties.put(Configuration.PROPERTY_FILTER_SELECTOR, "cache");
-    properties.put(Configuration.PROPERTY_REWRITE_PATH, true);
-    properties.put(Configuration.PROPERTY_IGNORE_URL_PARAMS, new String[] {"query"});
+    properties.put("include-filter.config.path", "/content/test/path");
+    properties.put("include-filter.config.include-type", "ESI");
+    properties.put("include-filter.config.add_comment", true);
+    properties.put("include-filter.config.ttl", 60);
+    properties.put("include-filter.config.enabled", true);
+    properties.put("include-filter.config.resource-types", new String[]{"test/resource/type"});
+    properties.put("include-filter.config.required_header", "CustomHeader: value");
+    properties.put("include-filter.config.selector", "cache");
+    properties.put("include-filter.config.rewrite", true);
+    properties.put("include-filter.config.ignoreUrlParams", new String[] {"query"});
 
-    tested.activate(null, properties);
+    context.registerInjectActivateService(tested, properties);
 
     assertThat(tested.getPathMatcher().getClass().isAssignableFrom(PrefixPathMatcher.class), is(true));
     assertThat(tested.getAddComment(), is(true));

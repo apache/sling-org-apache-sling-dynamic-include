@@ -19,23 +19,23 @@
 
 package org.apache.sling.dynamicinclude;
 
-import java.util.Set;
+import static org.osgi.service.component.annotations.FieldOption.UPDATE;
+import static org.osgi.service.component.annotations.ReferenceCardinality.MULTIPLE;
+import static org.osgi.service.component.annotations.ReferencePolicy.DYNAMIC;
+
+import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import java.util.regex.Matcher;
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Reference;
-import org.apache.felix.scr.annotations.ReferenceCardinality;
-import org.apache.felix.scr.annotations.ReferencePolicy;
-import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.api.SlingHttpServletRequest;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
-@Component
-@Service(ConfigurationWhiteboard.class)
+@Component(service = ConfigurationWhiteboard.class)
 public class ConfigurationWhiteboard {
 
-    @Reference(referenceInterface = Configuration.class, cardinality = ReferenceCardinality.OPTIONAL_MULTIPLE, policy = ReferencePolicy.DYNAMIC)
-    private Set<Configuration> configs = new CopyOnWriteArraySet<Configuration>();
+    @Reference(service = Configuration.class, cardinality = MULTIPLE, policy = DYNAMIC, fieldOption = UPDATE)
+    // declared Collection due to SLING-8986
+    private volatile Collection<Configuration> configs = new CopyOnWriteArraySet<Configuration>();
 
     public Configuration getConfiguration(SlingHttpServletRequest request, String resourceType) {
         for (Configuration c : configs) {
@@ -50,12 +50,9 @@ public class ConfigurationWhiteboard {
         final String requestPath = request.getRequestPathInfo().getResourcePath();
         return config.isEnabled() && config.getPathMatcher().match(requestPath);
     }
-
-    protected void bindConfigs(final Configuration config) {
+    
+    // visible for testing
+    void bindConfigs(final Configuration config) {
         configs.add(config);
-    }
-
-    protected void unbindConfigs(final Configuration config) {
-        configs.remove(config);
     }
 }

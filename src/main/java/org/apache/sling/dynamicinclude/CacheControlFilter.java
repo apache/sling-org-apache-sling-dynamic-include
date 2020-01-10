@@ -28,15 +28,21 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import org.apache.felix.scr.annotations.Reference;
-import org.apache.felix.scr.annotations.sling.SlingFilter;
-import org.apache.felix.scr.annotations.sling.SlingFilterScope;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.servlets.annotations.SlingServletFilter;
+import org.apache.sling.servlets.annotations.SlingServletFilterScope;
+import org.osgi.framework.Constants;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@SlingFilter(scope = {SlingFilterScope.REQUEST, SlingFilterScope.FORWARD}, order = 0)
+
+@SlingServletFilter(scope = { SlingServletFilterScope.REQUEST, SlingServletFilterScope.FORWARD } )
+@Component(property = { 
+    Constants.SERVICE_RANKING + ":Integer=0"
+})
 public class CacheControlFilter implements Filter {
 
     private static final String HEADER_DATE = "Date";

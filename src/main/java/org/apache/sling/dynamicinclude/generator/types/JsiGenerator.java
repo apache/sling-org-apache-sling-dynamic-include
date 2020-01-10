@@ -27,11 +27,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.felix.scr.annotations.Activate;
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.dynamicinclude.generator.IncludeGenerator;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +38,6 @@ import org.slf4j.LoggerFactory;
  * Client side include generator - using Ajax/JQuery.
  */
 @Component
-@Service
 public class JsiGenerator implements IncludeGenerator {
     private static final String TEMPLATE_FILENAME = "generators/jquery.html";
 

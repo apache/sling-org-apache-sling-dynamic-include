@@ -19,15 +19,13 @@
 
 package org.apache.sling.dynamicinclude.generator.types;
 
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.dynamicinclude.generator.IncludeGenerator;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * Apache SSI include generator
  */
 @Component
-@Service
 public class SsiGenerator implements IncludeGenerator {
     private static final String GENERATOR_NAME = "SSI";
 
