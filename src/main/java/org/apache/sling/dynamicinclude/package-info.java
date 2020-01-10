@@ -16,6 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-@Version("4.2.1")
+@Version("5.0.0")
 package org.apache.sling.dynamicinclude;
 import org.osgi.annotation.versioning.Version;
