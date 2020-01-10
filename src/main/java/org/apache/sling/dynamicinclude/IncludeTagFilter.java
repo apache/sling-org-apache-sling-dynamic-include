@@ -35,19 +35,22 @@ import javax.servlet.ServletResponse;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.felix.scr.annotations.Reference;
-import org.apache.felix.scr.annotations.sling.SlingFilter;
-import org.apache.felix.scr.annotations.sling.SlingFilterScope;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceUtil;
 import org.apache.sling.dynamicinclude.generator.IncludeGenerator;
 import org.apache.sling.dynamicinclude.generator.IncludeGeneratorWhiteboard;
 import org.apache.sling.dynamicinclude.impl.UrlBuilder;
+import org.apache.sling.servlets.annotations.SlingServletFilter;
+import org.apache.sling.servlets.annotations.SlingServletFilterScope;
+import org.osgi.framework.Constants;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@SlingFilter(scope = SlingFilterScope.INCLUDE, order = -500)
+@SlingServletFilter(scope = SlingServletFilterScope.INCLUDE)
+@Component(property = { Constants.SERVICE_RANKING + ":Integer=-500"} )
 public class IncludeTagFilter implements Filter {
 
     private static final Logger LOG = LoggerFactory.getLogger(IncludeTagFilter.class);

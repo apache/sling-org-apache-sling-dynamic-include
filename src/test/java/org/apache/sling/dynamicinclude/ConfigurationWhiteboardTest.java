@@ -18,9 +18,6 @@
  */
 package org.apache.sling.dynamicinclude;
 
-import static org.apache.sling.dynamicinclude.Configuration.PROPERTY_FILTER_ENABLED;
-import static org.apache.sling.dynamicinclude.Configuration.PROPERTY_FILTER_PATH;
-import static org.apache.sling.dynamicinclude.Configuration.PROPERTY_FILTER_RESOURCE_TYPES;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -28,9 +25,12 @@ import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.request.RequestPathInfo;
+import org.apache.sling.testing.mock.osgi.junit.OsgiContext;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -38,9 +38,12 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ConfigurationWhiteboardTest {
-
+    
   private static final String TEST_RESOURCE_PATH = "/content/test/engl/home/pageresource";
   public static final String TEST_RESOURCE_TYPE = "test/component/resourceType";
+  
+  @Rule
+  public final OsgiContext context = new OsgiContext();
 
   private ConfigurationWhiteboard tested;
 
@@ -60,11 +63,11 @@ public class ConfigurationWhiteboardTest {
   private Configuration buildConfiguration(boolean enabled, String pathRegex, String[] resourceTypes) {
     Configuration configuration = new Configuration();
     Map<String, Object> properties = new HashMap<String, Object>();
-    properties.put(PROPERTY_FILTER_ENABLED, enabled);
-    properties.put(PROPERTY_FILTER_PATH, pathRegex);
-    properties.put(PROPERTY_FILTER_RESOURCE_TYPES, resourceTypes);
-    configuration.activate(null, properties);
-    return configuration;
+    properties.put("include-filter.config.enabled", enabled);
+    properties.put("include-filter.config.path", pathRegex);
+    properties.put("include-filter.config.resource-types", resourceTypes);
+    
+    return context.registerInjectActivateService(configuration, properties);
   }
 
   @Test
@@ -74,25 +77,25 @@ public class ConfigurationWhiteboardTest {
 
   @Test
   public void shouldNotReturnConfigurationIfResourceTypeDoesNotMatch() throws Exception {
-    Configuration testConfiguration = buildConfiguration(true, "^/content.*$", new String[]{"invalid/resourceType"});
-    tested.bindConfigs(testConfiguration);
+    buildConfiguration(true, "^/content.*$", new String[]{"invalid/resourceType"});
+    context.registerInjectActivateService(tested);
 
     assertThat(tested.getConfiguration(request, TEST_RESOURCE_TYPE), is(nullValue()));
   }
 
   @Test
   public void shouldNotReturnConfigurationIfConfigurationIsDisabled() throws Exception {
-    Configuration testConfiguration = buildConfiguration(false, "^/content.*$", new String[]{TEST_RESOURCE_TYPE});
-    tested.bindConfigs(testConfiguration);
+    buildConfiguration(false, "^/content.*$", new String[]{TEST_RESOURCE_TYPE});
+    context.registerInjectActivateService(tested);
 
     assertThat(tested.getConfiguration(request, TEST_RESOURCE_TYPE), is(nullValue()));
   }
 
   @Test
   public void shouldNotReturnConfigurationIfPathDoesNotMatchRegex() throws Exception {
-    Configuration testConfiguration = buildConfiguration(true, "^/content/notMatched/.*$",
+    buildConfiguration(true, "^/content/notMatched/.*$",
         new String[]{TEST_RESOURCE_TYPE});
-    tested.bindConfigs(testConfiguration);
+    context.registerInjectActivateService(tested);
 
     assertThat(tested.getConfiguration(request, TEST_RESOURCE_TYPE), is(nullValue()));
   }
@@ -100,7 +103,7 @@ public class ConfigurationWhiteboardTest {
   @Test
   public void shouldReturnValidConfiguration() throws Exception {
     Configuration testConfiguration = buildConfiguration(true, "^/content.*$", new String[]{TEST_RESOURCE_TYPE});
-    tested.bindConfigs(testConfiguration);
+    context.registerInjectActivateService(tested);
 
     assertThat(tested.getConfiguration(request, TEST_RESOURCE_TYPE), is(testConfiguration));
   }

@@ -18,5 +18,4 @@
  */
 @Version("4.2.1")
 package org.apache.sling.dynamicinclude;
-import aQute.bnd.annotation.Version;
-
+import org.osgi.annotation.versioning.Version;

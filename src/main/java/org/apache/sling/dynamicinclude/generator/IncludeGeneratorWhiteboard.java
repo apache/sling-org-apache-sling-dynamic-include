@@ -19,24 +19,24 @@
 
 package org.apache.sling.dynamicinclude.generator;
 
+import static org.osgi.service.component.annotations.FieldOption.UPDATE;
+import static org.osgi.service.component.annotations.ReferenceCardinality.MULTIPLE;
+import static org.osgi.service.component.annotations.ReferencePolicy.DYNAMIC;
+
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Reference;
-import org.apache.felix.scr.annotations.ReferenceCardinality;
-import org.apache.felix.scr.annotations.ReferencePolicy;
-import org.apache.felix.scr.annotations.Service;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * Service that provides include generator of given type.
  */
 
-@Component
-@Service(IncludeGeneratorWhiteboard.class)
+@Component(service = IncludeGeneratorWhiteboard.class)
 public class IncludeGeneratorWhiteboard {
 
-    @Reference(referenceInterface = IncludeGenerator.class, cardinality = ReferenceCardinality.MANDATORY_MULTIPLE, policy = ReferencePolicy.DYNAMIC)
+    @Reference(service = IncludeGenerator.class, cardinality = MULTIPLE, policy = DYNAMIC, fieldOption = UPDATE)
     private Set<IncludeGenerator> generators = new CopyOnWriteArraySet<IncludeGenerator>();
 
     public IncludeGenerator getGenerator(String type) {
@@ -47,13 +47,4 @@ public class IncludeGeneratorWhiteboard {
         }
         return null;
     }
-
-    void bindGenerators(IncludeGenerator generator) {
-        generators.add(generator);
-    }
-
-    void unbindGenerators(IncludeGenerator generator) {
-        generators.remove(generator);
-    }
-
 }

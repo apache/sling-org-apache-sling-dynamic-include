@@ -30,24 +30,21 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Properties;
-import org.apache.felix.scr.annotations.Property;
-import org.apache.felix.scr.annotations.Reference;
-import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.request.RequestDispatcherOptions;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceUtil;
-import org.apache.sling.engine.EngineConstants;
+import org.apache.sling.servlets.annotations.SlingServletFilter;
+import org.apache.sling.servlets.annotations.SlingServletFilterScope;
 import org.osgi.framework.Constants;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
-@Component(metatype = true, label = "Apache Sling Dynamic Include - Synthetic Resource Filter")
-@Service
-@Properties({
-        @Property(name = Constants.SERVICE_VENDOR, value = "The Apache Software Foundation"),
-        @Property(name = EngineConstants.SLING_FILTER_SCOPE, value = EngineConstants.FILTER_SCOPE_REQUEST, propertyPrivate = true),
-        @Property(name = Constants.SERVICE_RANKING, intValue = Integer.MIN_VALUE, propertyPrivate = false) })
+@SlingServletFilter(scope = SlingServletFilterScope.REQUEST)
+@Component(property = { 
+    Constants.SERVICE_RANKING + ":Integer=" + Integer.MIN_VALUE,
+    Constants.SERVICE_VENDOR  +"=The Apache Software Foundation"
+})
 public class SyntheticResourceFilter implements Filter {
 
     @Reference
