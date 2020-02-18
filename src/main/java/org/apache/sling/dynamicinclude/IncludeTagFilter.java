@@ -105,7 +105,8 @@ public class IncludeTagFilter implements Filter {
     }
 
     private boolean shouldWriteIncludes(Configuration config, SlingHttpServletRequest request) {
-        if (requestHasParameters(config.getIgnoreUrlParams(), request)) {
+        // Do not skip GET requests when DisableIgnoreUrlParams set to true.
+        if (!config.isDisableIgnoreUrlParams() && requestHasParameters(config.getIgnoreUrlParams(), request)) {
             return false;
         }
         final String requiredHeader = config.getRequiredHeader();
