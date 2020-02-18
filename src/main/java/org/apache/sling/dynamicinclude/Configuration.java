@@ -91,9 +91,12 @@ public class Configuration {
 
       @AttributeDefinition(name =  "Include path rewriting", description = "Check to enable include path rewriting")
       boolean include$_$filter_config_rewrite() default false;
-      
+
       @AttributeDefinition(name =  "Append suffix to dynamic includes", description = "Check to append the suffix of the parent request to the dynamic include.")
       boolean include$_$filter_config_appendSuffix() default true;
+
+      @AttributeDefinition(name =  "Disable ignore URL params check", description = "Disable the check in the Ignore URL Params setting.")
+      boolean include$_$filter_config_disableIgnoreUrlParams() default false;
   }
 
   private static final Logger LOG = LoggerFactory.getLogger(Configuration.class);
@@ -115,6 +118,8 @@ public class Configuration {
   private String includeTypeName;
 
   private String requiredHeader;
+
+  private boolean disableIgnoreUrlParams;
 
   private List<String> ignoreUrlParams;
 
@@ -146,6 +151,7 @@ public class Configuration {
         new String[0]));
     rewritePath = cfg.include$_$filter_config_rewrite();
     appendSuffix = cfg.include$_$filter_config_appendSuffix();
+    disableIgnoreUrlParams = cfg.include$_$filter_config_disableIgnoreUrlParams();
   }
 
   private PathMatcher choosePathMatcher(String pathPattern) {
@@ -215,6 +221,10 @@ public class Configuration {
 
   public List<String> getIgnoreUrlParams() {
     return ignoreUrlParams;
+  }
+
+  public boolean isDisableIgnoreUrlParams() {
+    return disableIgnoreUrlParams;
   }
 
   public boolean isRewritePath() {
