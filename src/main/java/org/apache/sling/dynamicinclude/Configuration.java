@@ -52,28 +52,28 @@ import org.slf4j.LoggerFactory;
     })
 @Designate(ocd = Configuration.Config.class, factory = true)
 public class Configuration {
-    
+
   @ObjectClassDefinition(name = "Apache Sling Dynamic Include - Configuration")
   public @interface Config {
       @AttributeDefinition(name="Enabled", description="Check to enable the filter")
       boolean include$_$filter_config_enabled() default false;
-      
+
       @AttributeDefinition(name="Base path regular expression", description="This SDI configuration will work only for paths matching this value. If value starts with \\\"^\\\" sign, regex matching will be performed. Otherwise it will check for path prefix.")
       String include$_$filter_config_path() default "/content";
-      
+
       @AttributeDefinition(name="Resource types", description="Filter will replace components with selected resource types", cardinality = Integer.MAX_VALUE)
       String include$_$filter_config_resource$_$types() default "";
-      
+
       @AttributeDefinition(name = "Include type", description = "Type of generated include tags", options = {
           @Option(label = "Apache SSI", value = "SSI"),
           @Option(label = "ESI", value = "ESI"),
           @Option(label = "Javascript", value = "JSI")
       })
       String include$_$filter_config_include$_$type() default "SSI";
-      
+
       @AttributeDefinition(name="Add comment", description = "Add comment to included components")
       boolean include$_$filter_config_add__comment() default false;
-      
+
       @AttributeDefinition(name = "Filter selector", description = "Selector used to mark included resources")
       String include$_$filter_config_selector() default "nocache";
 
@@ -97,6 +97,15 @@ public class Configuration {
 
       @AttributeDefinition(name =  "Disable ignore URL params check", description = "Disable the check in the Ignore URL Params setting.")
       boolean include$_$filter_config_disableIgnoreUrlParams() default false;
+
+      @AttributeDefinition(name = "Rewrite path for XF", description = "Check to enable path rewriting for XF")
+      boolean include$_$filter_config_xfRewrite() default false;
+
+      @AttributeDefinition(name = "XF Path Property", description = "Filter will replace XF path with selected resource types from this property")
+      String include$_$filter_config_xfPathProperty() default "fragmentVariationPath";
+
+      @AttributeDefinition(name = "XF selector", description = "Selector used to include XF without HTML wrapper")
+      String include$_$filter_config_xfSelector() default "content";
   }
 
   private static final Logger LOG = LoggerFactory.getLogger(Configuration.class);
@@ -127,6 +136,12 @@ public class Configuration {
 
   private boolean appendSuffix;
 
+  private boolean xfRewriteEnabled;
+
+  private String xfPathProperty;
+
+  private String xfSelector;
+
   @Activate
   public void activate(Config cfg) {
     isEnabled = cfg.include$_$filter_config_enabled();
@@ -152,6 +167,9 @@ public class Configuration {
     rewritePath = cfg.include$_$filter_config_rewrite();
     appendSuffix = cfg.include$_$filter_config_appendSuffix();
     disableIgnoreUrlParams = cfg.include$_$filter_config_disableIgnoreUrlParams();
+    xfRewriteEnabled = cfg.include$_$filter_config_xfRewrite();
+    xfPathProperty = cfg.include$_$filter_config_xfPathProperty();
+    xfSelector = cfg.include$_$filter_config_xfSelector();
   }
 
   private PathMatcher choosePathMatcher(String pathPattern) {
@@ -234,4 +252,11 @@ public class Configuration {
   public boolean isAppendSuffix() {
       return appendSuffix;
   }
+
+  public boolean isXfRewriteEnabled() { return xfRewriteEnabled; }
+
+  public String getXfPathProperty() { return xfPathProperty; }
+
+  public String getXfSelector() { return xfSelector; }
+
 }

@@ -38,6 +38,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceUtil;
+import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.dynamicinclude.generator.IncludeGenerator;
 import org.apache.sling.dynamicinclude.generator.IncludeGeneratorWhiteboard;
 import org.apache.sling.dynamicinclude.impl.UrlBuilder;
@@ -50,7 +51,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @SlingServletFilter(scope = SlingServletFilterScope.INCLUDE)
-@Component(property = { Constants.SERVICE_RANKING + ":Integer=-500"} )
+@Component(property = {Constants.SERVICE_RANKING + ":Integer=-500"})
 public class IncludeTagFilter implements Filter {
 
     private static final Logger LOG = LoggerFactory.getLogger(IncludeTagFilter.class);
@@ -166,8 +167,22 @@ public class IncludeTagFilter implements Filter {
     private String buildUrl(Configuration config, SlingHttpServletRequest request) {
         final Resource resource = request.getResource();
 
+        // The below code gets the path to the XF and then passes it to the buildUrl method
+        // so that the path to the component is replaced with path to the XF
+        ValueMap vm = resource.adaptTo(ValueMap.class);
+        String xfPath = "";
+        Boolean replaceToXfPath = false;
+        if (config.isXfRewriteEnabled() &&
+                null != vm &&
+                vm.containsKey(config.getXfPathProperty())) {
+            xfPath = vm.get(config.getXfPathProperty(), String.class);
+            if (xfPath.length() > 0) {
+                replaceToXfPath = true;
+            }
+        }
+
         final boolean synthetic = ResourceUtil.isSyntheticResource(request.getResource());
-        return UrlBuilder.buildUrl(config.getIncludeSelector(), resource.getResourceType(), synthetic, config, request.getRequestPathInfo());
+        return UrlBuilder.buildUrl(config.getIncludeSelector(), resource.getResourceType(), synthetic, config, request.getRequestPathInfo(), xfPath, replaceToXfPath);
     }
 
     private static String sanitize(String path) {

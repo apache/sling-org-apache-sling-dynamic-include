@@ -45,6 +45,9 @@ Filter is delivered as a standard OSGi bundle. SDI is configured via the configu
 * **Ignore URL params** - SDI normally skips all requests containing any GET parameters. This option allows to set a list of parameters that should be ignored in the test. See the [Ignoring URL parameters](https://docs.adobe.com/docs/en/dispatcher/disp-config.html#Ignoring%20URL%20Parameters) section in the dispatcher documentation.
 * **Include path rewriting** -- enable rewriting link (according to sling mappings) that is used for dynamic content including.
 * **Append suffix** -- ensures that the suffix of the parent request is included with the dynamic include.
+* **Rewrite path for XF** -- ensures that the SSI directive includes the path of the Experience Fragment rather than the path of the component.
+* **XF Path Property** -- Experience Fragment Variation property within the Experience Fragment Core Component.
+* **XF selector** -- ensures that the selector is added to the path of the Experience Fragment to ensure it works similarly to how it works when called via Experience Fragment Core Component.
 
 ## Compatibility with components
 
