@@ -22,7 +22,6 @@ package org.apache.sling.dynamicinclude.impl;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.request.RequestPathInfo;
 import org.apache.sling.dynamicinclude.Configuration;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -190,7 +189,7 @@ public class UrlBuilderTest {
         withSelectorString(null);
         boolean isSyntheticResource = false;
 
-        when(config.getXfSelector()).thenReturn("content");
+        when(config.getContentSelector()).thenReturn("content");
 
         String actualResult = UrlBuilder.buildUrl("include", "apps/example/resource/type", isSyntheticResource, config, requestPathInfo, "/xf/path", true);
 
@@ -203,7 +202,7 @@ public class UrlBuilderTest {
         withSelectorString(null);
         boolean isSyntheticResource = false;
 
-        when(config.getXfSelector()).thenReturn("");
+        when(config.getContentSelector()).thenReturn("");
 
         String actualResult = UrlBuilder.buildUrl("include", "apps/example/resource/type", isSyntheticResource, config, requestPathInfo, "/xf/path", true);
 

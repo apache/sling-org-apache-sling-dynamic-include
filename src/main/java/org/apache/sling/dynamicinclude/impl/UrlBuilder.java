@@ -28,14 +28,14 @@ import org.apache.sling.dynamicinclude.Configuration;
 public final class UrlBuilder {
 
 
-    public static String buildUrl(String includeSelector, String resourceType, boolean synthetic, Configuration config, RequestPathInfo pathInfo, String xfPath, boolean replaceToXfPath) {
+    public static String buildUrl(String includeSelector, String resourceType, boolean synthetic, Configuration config, RequestPathInfo pathInfo, String contentPath, boolean replaceToContentPath) {
         final StringBuilder builder = new StringBuilder();
 
         final String resourcePath = pathInfo.getResourcePath();
-        if (replaceToXfPath) {
-            builder.append(xfPath);
-            if (config.getXfSelector().length() > 0) {
-                builder.append('.').append(config.getXfSelector());
+        if (replaceToContentPath) {
+            builder.append(contentPath);
+            if (config.getContentSelector().length() > 0) {
+                builder.append('.').append(config.getContentSelector());
             }
         } else {
             builder.append(resourcePath);

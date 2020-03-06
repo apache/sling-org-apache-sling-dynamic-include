@@ -167,22 +167,22 @@ public class IncludeTagFilter implements Filter {
     private String buildUrl(Configuration config, SlingHttpServletRequest request) {
         final Resource resource = request.getResource();
 
-        // The below code gets the path to the XF and then passes it to the buildUrl method
-        // so that the path to the component is replaced with path to the XF
+        // The below code gets the path to the content and then passes it to the buildUrl method
+        // so that the path to the component is replaced with path to the content
         ValueMap vm = resource.adaptTo(ValueMap.class);
-        String xfPath = "";
-        Boolean replaceToXfPath = false;
-        if (config.isXfRewriteEnabled() &&
+        String contentPath = "";
+        Boolean replaceToContentPath = false;
+        if (config.isContentPathRewriteEnabled() &&
                 null != vm &&
-                vm.containsKey(config.getXfPathProperty())) {
-            xfPath = vm.get(config.getXfPathProperty(), String.class);
-            if (xfPath.length() > 0) {
-                replaceToXfPath = true;
+                vm.containsKey(config.getContentPathProperty())) {
+            contentPath = vm.get(config.getContentPathProperty(), String.class);
+            if (contentPath.length() > 0) {
+                replaceToContentPath = true;
             }
         }
 
         final boolean synthetic = ResourceUtil.isSyntheticResource(request.getResource());
-        return UrlBuilder.buildUrl(config.getIncludeSelector(), resource.getResourceType(), synthetic, config, request.getRequestPathInfo(), xfPath, replaceToXfPath);
+        return UrlBuilder.buildUrl(config.getIncludeSelector(), resource.getResourceType(), synthetic, config, request.getRequestPathInfo(), contentPath, replaceToContentPath);
     }
 
     private static String sanitize(String path) {

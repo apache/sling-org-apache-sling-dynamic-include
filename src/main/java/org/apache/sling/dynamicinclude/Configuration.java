@@ -98,14 +98,14 @@ public class Configuration {
       @AttributeDefinition(name =  "Disable ignore URL params check", description = "Disable the check in the Ignore URL Params setting.")
       boolean include$_$filter_config_disableIgnoreUrlParams() default false;
 
-      @AttributeDefinition(name = "Rewrite path for XF", description = "Check to enable path rewriting for XF")
-      boolean include$_$filter_config_xfRewrite() default false;
+      @AttributeDefinition(name = "Rewrite to Content Path", description = "Check to enable rewriting to Content Path than Resource Path")
+      boolean include$_$filter_config_contentPathRewrite() default false;
 
-      @AttributeDefinition(name = "XF Path Property", description = "Filter will replace XF path with selected resource types from this property")
-      String include$_$filter_config_xfPathProperty() default "fragmentVariationPath";
+      @AttributeDefinition(name = "Content Path Property", description = "Filter will replace content path with selected resource types from this property")
+      String include$_$filter_config_contentPathProperty() default "fragmentVariationPath";
 
-      @AttributeDefinition(name = "XF selector", description = "Selector used to include XF without HTML wrapper")
-      String include$_$filter_config_xfSelector() default "content";
+      @AttributeDefinition(name = "Content selector", description = "Selector used to include content without HTML wrapper")
+      String include$_$filter_config_contentSelector() default "content";
   }
 
   private static final Logger LOG = LoggerFactory.getLogger(Configuration.class);
@@ -136,11 +136,11 @@ public class Configuration {
 
   private boolean appendSuffix;
 
-  private boolean xfRewriteEnabled;
+  private boolean contentPathRewriteEnabled;
 
-  private String xfPathProperty;
+  private String contentPathProperty;
 
-  private String xfSelector;
+  private String contentSelector;
 
   @Activate
   public void activate(Config cfg) {
@@ -167,9 +167,9 @@ public class Configuration {
     rewritePath = cfg.include$_$filter_config_rewrite();
     appendSuffix = cfg.include$_$filter_config_appendSuffix();
     disableIgnoreUrlParams = cfg.include$_$filter_config_disableIgnoreUrlParams();
-    xfRewriteEnabled = cfg.include$_$filter_config_xfRewrite();
-    xfPathProperty = cfg.include$_$filter_config_xfPathProperty();
-    xfSelector = cfg.include$_$filter_config_xfSelector();
+    contentPathRewriteEnabled = cfg.include$_$filter_config_contentPathRewrite();
+    contentPathProperty = cfg.include$_$filter_config_contentPathProperty();
+    contentSelector = cfg.include$_$filter_config_contentSelector();
   }
 
   private PathMatcher choosePathMatcher(String pathPattern) {
@@ -253,10 +253,10 @@ public class Configuration {
       return appendSuffix;
   }
 
-  public boolean isXfRewriteEnabled() { return xfRewriteEnabled; }
+  public boolean isContentPathRewriteEnabled() { return contentPathRewriteEnabled; }
 
-  public String getXfPathProperty() { return xfPathProperty; }
+  public String getContentPathProperty() { return contentPathProperty; }
 
-  public String getXfSelector() { return xfSelector; }
+  public String getContentSelector() { return contentSelector; }
 
 }
