@@ -20,6 +20,8 @@
 package org.apache.sling.dynamicinclude;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -121,7 +123,7 @@ public class Configuration {
 
   private boolean disableIgnoreUrlParams;
 
-  private List<String> ignoreUrlParams;
+  private Collection<String> ignoreUrlParams;
 
   private boolean rewritePath;
 
@@ -147,8 +149,9 @@ public class Configuration {
     addComment = cfg.include$_$filter_config_add__comment();
     includeTypeName = cfg.include$_$filter_config_include$_$type();
     requiredHeader = cfg.include$_$filter_config_required__header();
-    ignoreUrlParams = Arrays.asList(PropertiesUtil.toStringArray(cfg.include$_$filter_config_ignoreUrlParams(),
-        new String[0]));
+    ignoreUrlParams = new HashSet<>(
+            Arrays.asList(PropertiesUtil.toStringArray(cfg.include$_$filter_config_ignoreUrlParams(), new String[0]))
+    );
     rewritePath = cfg.include$_$filter_config_rewrite();
     appendSuffix = cfg.include$_$filter_config_appendSuffix();
     disableIgnoreUrlParams = cfg.include$_$filter_config_disableIgnoreUrlParams();
@@ -219,7 +222,7 @@ public class Configuration {
     return requiredHeader;
   }
 
-  public List<String> getIgnoreUrlParams() {
+  public Collection<String> getIgnoreUrlParams() {
     return ignoreUrlParams;
   }
 

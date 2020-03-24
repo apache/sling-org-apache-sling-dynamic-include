@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -113,7 +114,7 @@ public class IncludeTagFilter implements Filter {
         return StringUtils.isBlank(requiredHeader) || containsHeader(requiredHeader, request);
     }
 
-    private boolean requestHasParameters(List<String> ignoreUrlParams, SlingHttpServletRequest request) {
+    private boolean requestHasParameters(Collection<String> ignoreUrlParams, SlingHttpServletRequest request) {
         final Enumeration<?> paramNames = request.getParameterNames();
         while (paramNames.hasMoreElements()) {
             final String paramName = (String) paramNames.nextElement();
