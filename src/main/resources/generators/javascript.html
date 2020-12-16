@@ -18,9 +18,19 @@
 -->
 <div id="${uniqueId}"></div>
 <script type="text/javascript">
-jQuery.get("${url}", 
-	function(data) {
-		jQuery("#${uniqueId}").replaceWith(data);
-	});
+    if (window.XMLHttpRequest) {
+        var xhr = new XMLHttpRequest();
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        xhr.timeout = 10000;
+        xhr.onload = function () {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                var elemId = document.getElementById('${uniqueId}');
+                if (elemId) elemId.innerHTML = xhr.responseText;
+            }
+        };
+        xhr.open('GET', encodeURI("${url}"));
+        xhr.send();
+    }
+
 </script>
 <noscript>Your browser does not support JavaScript. Some components may not be visible.</noscript>

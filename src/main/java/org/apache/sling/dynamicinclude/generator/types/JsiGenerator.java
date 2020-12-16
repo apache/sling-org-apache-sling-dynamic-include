@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  */
 @Component
 public class JsiGenerator implements IncludeGenerator {
-    private static final String TEMPLATE_FILENAME = "generators/jquery.html";
+    private static final String TEMPLATE_FILENAME = "generators/javascript.html";
 
     private static final String UUID_FIELD = "${uniqueId}";
 
