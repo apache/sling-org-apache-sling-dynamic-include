@@ -77,7 +77,7 @@ After setting output filter open virtualhost configuration and add `Includes` op
             AllowOverride None
         </Directory>
         <Directory /var/www/>
-            Options Indexes FollowSymLinks MultiViews Includes
+            Options Indexes FollowSymLinks Includes
             AllowOverride None
             Order allow,deny
             allow from all
