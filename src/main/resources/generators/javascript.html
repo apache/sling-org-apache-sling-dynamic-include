@@ -20,6 +20,7 @@
 <script type="text/javascript">
     if (window.XMLHttpRequest) {
         var xhr = new XMLHttpRequest();
+        xhr.open('GET', encodeURI("${url}"));
         xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
         xhr.timeout = 10000;
         xhr.onload = function () {
@@ -28,7 +29,6 @@
                 if (elemId) elemId.innerHTML = xhr.responseText;
             }
         };
-        xhr.open('GET', encodeURI("${url}"));
         xhr.send();
     }
 
