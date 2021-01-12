@@ -54,28 +54,28 @@ import org.slf4j.LoggerFactory;
     })
 @Designate(ocd = Configuration.Config.class, factory = true)
 public class Configuration {
-    
+
   @ObjectClassDefinition(name = "Apache Sling Dynamic Include - Configuration")
   public @interface Config {
       @AttributeDefinition(name="Enabled", description="Check to enable the filter")
       boolean include$_$filter_config_enabled() default false;
-      
+
       @AttributeDefinition(name="Base path regular expression", description="This SDI configuration will work only for paths matching this value. If value starts with \\\"^\\\" sign, regex matching will be performed. Otherwise it will check for path prefix.")
       String include$_$filter_config_path() default "/content";
-      
+
       @AttributeDefinition(name="Resource types", description="Filter will replace components with selected resource types", cardinality = Integer.MAX_VALUE)
       String include$_$filter_config_resource$_$types() default "";
-      
+
       @AttributeDefinition(name = "Include type", description = "Type of generated include tags", options = {
           @Option(label = "Apache SSI", value = "SSI"),
           @Option(label = "ESI", value = "ESI"),
           @Option(label = "Javascript", value = "JSI")
       })
       String include$_$filter_config_include$_$type() default "SSI";
-      
+
       @AttributeDefinition(name="Add comment", description = "Add comment to included components")
       boolean include$_$filter_config_add__comment() default false;
-      
+
       @AttributeDefinition(name = "Filter selector", description = "Selector used to mark included resources")
       String include$_$filter_config_selector() default "nocache";
 
@@ -99,6 +99,15 @@ public class Configuration {
 
       @AttributeDefinition(name =  "Disable ignore URL params check", description = "Disable the check in the Ignore URL Params setting.")
       boolean include$_$filter_config_disableIgnoreUrlParams() default false;
+
+      @AttributeDefinition(name = "Rewrite to Content Path", description = "Check to enable rewriting to Content Path than Resource Path")
+      boolean include$_$filter_config_contentPathRewrite() default false;
+
+      @AttributeDefinition(name = "Content Path Property", description = "Filter will replace content path with selected resource types from this property")
+      String include$_$filter_config_contentPathProperty() default "fragmentVariationPath";
+
+      @AttributeDefinition(name = "Content selector", description = "Selector used to include content without HTML wrapper")
+      String include$_$filter_config_contentSelector() default "content";
   }
 
   private static final Logger LOG = LoggerFactory.getLogger(Configuration.class);
@@ -129,6 +138,12 @@ public class Configuration {
 
   private boolean appendSuffix;
 
+  private boolean contentPathRewriteEnabled;
+
+  private String contentPathProperty;
+
+  private String contentSelector;
+
   @Activate
   public void activate(Config cfg) {
     isEnabled = cfg.include$_$filter_config_enabled();
@@ -155,6 +170,9 @@ public class Configuration {
     rewritePath = cfg.include$_$filter_config_rewrite();
     appendSuffix = cfg.include$_$filter_config_appendSuffix();
     disableIgnoreUrlParams = cfg.include$_$filter_config_disableIgnoreUrlParams();
+    contentPathRewriteEnabled = cfg.include$_$filter_config_contentPathRewrite();
+    contentPathProperty = cfg.include$_$filter_config_contentPathProperty();
+    contentSelector = cfg.include$_$filter_config_contentSelector();
   }
 
   private PathMatcher choosePathMatcher(String pathPattern) {
@@ -237,4 +255,11 @@ public class Configuration {
   public boolean isAppendSuffix() {
       return appendSuffix;
   }
+
+  public boolean isContentPathRewriteEnabled() { return contentPathRewriteEnabled; }
+
+  public String getContentPathProperty() { return contentPathProperty; }
+
+  public String getContentSelector() { return contentSelector; }
+
 }

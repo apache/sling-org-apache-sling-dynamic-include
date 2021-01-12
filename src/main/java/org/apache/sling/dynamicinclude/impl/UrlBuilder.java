@@ -28,11 +28,18 @@ import org.apache.sling.dynamicinclude.Configuration;
 public final class UrlBuilder {
 
 
-    public static String buildUrl(String includeSelector, String resourceType, boolean synthetic, Configuration config, RequestPathInfo pathInfo) {
+    public static String buildUrl(String includeSelector, String resourceType, boolean synthetic, Configuration config, RequestPathInfo pathInfo, String contentPath, boolean replaceToContentPath) {
         final StringBuilder builder = new StringBuilder();
 
         final String resourcePath = pathInfo.getResourcePath();
-        builder.append(resourcePath);
+        if (replaceToContentPath) {
+            builder.append(contentPath);
+            if (config.getContentSelector().length() > 0) {
+                builder.append('.').append(config.getContentSelector());
+            }
+        } else {
+            builder.append(resourcePath);
+        }
         String currentSelectorString = StringUtils.defaultString(pathInfo.getSelectorString());
         if (pathInfo.getSelectorString() != null) {
             builder.append('.').append(currentSelectorString);

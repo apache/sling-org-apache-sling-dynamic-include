@@ -64,6 +64,9 @@ public class ConfigurationTest {
     assertThat(tested.isEnabled(), is(false));
     assertThat(tested.hasTtlSet(), is(false));
     assertThat(tested.isRewritePath(), is(false));
+    assertThat(tested.isContentPathRewriteEnabled(), is(false));
+    assertThat(tested.getContentPathProperty(), is("fragmentVariationPath"));
+    assertThat(tested.getContentSelector(), is("content"));
   }
 
   @Test
@@ -79,6 +82,9 @@ public class ConfigurationTest {
     properties.put("include-filter.config.selector", "cache");
     properties.put("include-filter.config.rewrite", true);
     properties.put("include-filter.config.ignoreUrlParams", new String[] {"query"});
+    properties.put("include-filter.config.contentPathRewrite", true);
+    properties.put("include-filter.config.contentPathProperty", "contentPath");
+    properties.put("include-filter.config.contentSelector", "newSelector");
 
     context.registerInjectActivateService(tested, properties);
 
@@ -93,5 +99,8 @@ public class ConfigurationTest {
     assertThat(tested.hasTtlSet(), is(true));
     assertThat(tested.isRewritePath(), is(true));
     assertThat(tested.isSupportedResourceType("test/resource/type"), is(true));
+    assertThat(tested.isContentPathRewriteEnabled(), is(true));
+    assertThat(tested.getContentPathProperty(), is("contentPath"));
+    assertThat(tested.getContentSelector(), is("newSelector"));
   }
 }
