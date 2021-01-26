@@ -20,6 +20,7 @@
 package org.apache.sling.dynamicinclude.generator.types;
 
 import org.apache.sling.dynamicinclude.generator.IncludeGenerator;
+import org.apache.sling.api.SlingHttpServletRequest;
 import org.osgi.service.component.annotations.Component;
 
 /**
@@ -35,7 +36,7 @@ public class SsiGenerator implements IncludeGenerator {
     }
 
     @Override
-    public String getInclude(String url) {
+    public String getInclude(SlingHttpServletRequest request, String url) {
         StringBuffer buf = new StringBuffer();
         buf.append("<!--#include virtual=\"");
         buf.append(escapeForApache(url));

@@ -97,7 +97,7 @@ public class IncludeTagFilter implements Filter {
         // Only write the includes markup if the required, configurable request
         // header is present
         if (shouldWriteIncludes(config, slingRequest)) {
-            String include = generator.getInclude(url);
+            String include = generator.getInclude(slingRequest,url);
             LOG.debug(include);
             writer.append(include);
         } else {

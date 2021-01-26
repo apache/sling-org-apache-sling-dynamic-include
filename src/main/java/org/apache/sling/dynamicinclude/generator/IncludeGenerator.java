@@ -19,11 +19,13 @@
 
 package org.apache.sling.dynamicinclude.generator;
 
+import org.apache.sling.api.SlingHttpServletRequest;
+
 /**
  * Include generator interface
  */
 public interface IncludeGenerator {
     String getType();
 
-    String getInclude(String url);
+    String getInclude(SlingHttpServletRequest request,String url);
 }
