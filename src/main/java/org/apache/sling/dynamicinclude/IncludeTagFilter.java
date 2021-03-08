@@ -25,7 +25,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Enumeration;
-import java.util.List;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -39,7 +38,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceUtil;
-import org.apache.sling.dynamicinclude.generator.IncludeGenerator;
+import org.apache.sling.dynamicinclude.api.IncludeGenerator;
 import org.apache.sling.dynamicinclude.generator.IncludeGeneratorWhiteboard;
 import org.apache.sling.dynamicinclude.impl.UrlBuilder;
 import org.apache.sling.servlets.annotations.SlingServletFilter;

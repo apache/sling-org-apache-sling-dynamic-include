@@ -66,11 +66,7 @@ public class Configuration {
       @AttributeDefinition(name="Resource types", description="Filter will replace components with selected resource types", cardinality = Integer.MAX_VALUE)
       String include$_$filter_config_resource$_$types() default "";
       
-      @AttributeDefinition(name = "Include type", description = "Type of generated include tags", options = {
-          @Option(label = "Apache SSI", value = "SSI"),
-          @Option(label = "ESI", value = "ESI"),
-          @Option(label = "Javascript", value = "JSI")
-      })
+      @AttributeDefinition(name = "Include type", description = "Type of generated include tags")
       String include$_$filter_config_include$_$type() default "SSI";
       
       @AttributeDefinition(name="Add comment", description = "Add comment to included components")

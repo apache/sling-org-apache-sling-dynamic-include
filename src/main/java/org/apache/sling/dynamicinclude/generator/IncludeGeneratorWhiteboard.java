@@ -26,6 +26,7 @@ import static org.osgi.service.component.annotations.ReferencePolicy.DYNAMIC;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import org.apache.sling.dynamicinclude.api.IncludeGenerator;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 

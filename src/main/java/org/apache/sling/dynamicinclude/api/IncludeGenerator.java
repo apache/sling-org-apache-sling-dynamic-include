@@ -17,31 +17,15 @@
  * under the License.
  */
 
-package org.apache.sling.dynamicinclude.generator.types;
+package org.apache.sling.dynamicinclude.api;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.dynamicinclude.api.IncludeGenerator;
-import org.osgi.service.component.annotations.Component;
 
 /**
- * ESI include generator
+ * Include generator interface
  */
-@Component
-public class EsiGenerator implements IncludeGenerator {
-    private static final String GENERATOR_NAME = "ESI";
+public interface IncludeGenerator {
+    String getType();
 
-    @Override
-    public String getType() {
-        return GENERATOR_NAME;
-    }
-
-    @Override
-    public String getInclude(SlingHttpServletRequest request, String url) {
-        StringBuffer buf = new StringBuffer();
-        buf.append("<esi:include src=\"");
-        buf.append(StringEscapeUtils.escapeHtml4(url));
-        buf.append("\"/>");
-        return buf.toString();
-    }
+    String getInclude(SlingHttpServletRequest request,String url);
 }

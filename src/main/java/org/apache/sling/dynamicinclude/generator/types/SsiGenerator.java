@@ -19,8 +19,8 @@
 
 package org.apache.sling.dynamicinclude.generator.types;
 
-import org.apache.sling.dynamicinclude.generator.IncludeGenerator;
 import org.apache.sling.api.SlingHttpServletRequest;
+import org.apache.sling.dynamicinclude.api.IncludeGenerator;
 import org.osgi.service.component.annotations.Component;
 
 /**

@@ -28,7 +28,7 @@ import java.net.URL;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.dynamicinclude.generator.IncludeGenerator;
+import org.apache.sling.dynamicinclude.api.IncludeGenerator;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;

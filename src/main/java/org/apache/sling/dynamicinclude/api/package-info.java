@@ -17,15 +17,7 @@
  * under the License.
  */
 
-package org.apache.sling.dynamicinclude.generator;
+@Version("1.0.0")
+package org.apache.sling.dynamicinclude.api;
 
-import org.apache.sling.api.SlingHttpServletRequest;
-
-/**
- * Include generator interface
- */
-public interface IncludeGenerator {
-    String getType();
-
-    String getInclude(SlingHttpServletRequest request,String url);
-}
+import org.osgi.annotation.versioning.Version;
