@@ -36,6 +36,7 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
+import org.osgi.service.metatype.annotations.AttributeType;
 import org.osgi.service.metatype.annotations.Designate;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import org.slf4j.Logger;
@@ -62,8 +63,10 @@ public class Configuration {
       @AttributeDefinition(name="Base path regular expression", description="This SDI configuration will work only for paths matching this value. If value starts with \\\"^\\\" sign, regex matching will be performed. Otherwise it will check for path prefix.")
       String include$_$filter_config_path() default "/content";
       
-      @AttributeDefinition(name="Resource types", description="Filter will replace components with selected resource types", cardinality = Integer.MAX_VALUE)
-      String include$_$filter_config_resource$_$types() default "";
+      @AttributeDefinition(name = "Resource types",
+          description = "Filter will replace components with selected resource types",
+          type = AttributeType.STRING)
+      String[] include$_$filter_config_resource$_$types() default {};
       
       @AttributeDefinition(name = "Include type", description = "Type of generated include tags")
       String include$_$filter_config_include$_$type() default "SSI";
@@ -83,8 +86,10 @@ public class Configuration {
       @AttributeDefinition(name = "Required header", description = "SDI will work only for requests with given header")
       String include$_$filter_config_required__header() default "Server-Agent=Communique-Dispatcher";
 
-      @AttributeDefinition(name = "Ignore URL params", description = "SDI will process the request even if it contains configured GET parameters", cardinality = Integer.MAX_VALUE)
-      String include$_$filter_config_ignoreUrlParams() default "";
+      @AttributeDefinition(name = "Ignore URL params",
+          description = "SDI will process the request even if it contains configured GET parameters",
+          type = AttributeType.STRING)
+      String[] include$_$filter_config_ignoreUrlParams() default {};
 
       @AttributeDefinition(name =  "Include path rewriting", description = "Check to enable include path rewriting")
       boolean include$_$filter_config_rewrite() default false;
