@@ -74,17 +74,18 @@ public class ConfigurationTest {
     properties.put("include-filter.config.add_comment", true);
     properties.put("include-filter.config.ttl", 60);
     properties.put("include-filter.config.enabled", true);
-    properties.put("include-filter.config.resource-types", new String[]{"test/resource/type"});
+    properties.put("include-filter.config.resource-types",
+        new String[] { "test/resource/type", "test/resource/type2" });
     properties.put("include-filter.config.required_header", "CustomHeader: value");
     properties.put("include-filter.config.selector", "cache");
     properties.put("include-filter.config.rewrite", true);
-    properties.put("include-filter.config.ignoreUrlParams", new String[] {"query"});
+    properties.put("include-filter.config.ignoreUrlParams", new String[] { "query", "query2" });
 
     context.registerInjectActivateService(tested, properties);
 
     assertThat(tested.getPathMatcher().getClass().isAssignableFrom(PrefixPathMatcher.class), is(true));
     assertThat(tested.getAddComment(), is(true));
-    assertThat(tested.getIgnoreUrlParams().size(), is(1));
+    assertThat(tested.getIgnoreUrlParams().size(), is(2));
     assertThat(tested.getIncludeSelector(), is("cache"));
     assertThat(tested.getIncludeTypeName(), is("ESI"));
     assertThat(tested.getRequiredHeader(), is("CustomHeader: value"));
@@ -93,5 +94,6 @@ public class ConfigurationTest {
     assertThat(tested.hasTtlSet(), is(true));
     assertThat(tested.isRewritePath(), is(true));
     assertThat(tested.isSupportedResourceType("test/resource/type"), is(true));
+    assertThat(tested.isSupportedResourceType("test/resource/type2"), is(true));
   }
 }
