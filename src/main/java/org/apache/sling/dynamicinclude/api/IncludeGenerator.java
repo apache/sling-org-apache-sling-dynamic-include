@@ -27,5 +27,21 @@ import org.apache.sling.api.SlingHttpServletRequest;
 public interface IncludeGenerator {
     String getType();
 
-    String getInclude(SlingHttpServletRequest request,String url);
+    /**
+     * Returns the string used to include the resource.
+     * For example, this might be a Javascript code that retrieves a snippet of html,
+     * an Apache SSI Tag, or an Edge Side Include Tag.
+     * <p>
+     * This method receives the sling request and an Url that has already be normalized as followed:
+     * <ul>
+     * <li>The query string has been removed</li>
+     * <li>The Url has been mapped using the ResourceResolver</li>
+     * <li>The jcr:content paths have been encoded to _jcr_content.</li>
+     * </ul>
+     *
+     * @param request       the Sling request object
+     * @param normalizedUrl the requested url, normalized
+     * @return a String used to include the resource
+     **/
+    String getInclude(SlingHttpServletRequest request, String normalizedUrl);
 }

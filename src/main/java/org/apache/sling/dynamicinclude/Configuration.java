@@ -71,7 +71,7 @@ public class Configuration {
       @AttributeDefinition(name="Add comment", description = "Add comment to included components")
       boolean include$_$filter_config_add__comment() default false;
       
-      @AttributeDefinition(name = "Filter selector", description = "Selector used to mark included resources")
+      @AttributeDefinition(name = "Filter selector", description = "Selector used to mark included resources. The Built in option are 'SSI','ESI' and 'JSI'")
       String include$_$filter_config_selector() default "nocache";
 
       @AttributeDefinition(name = "Extension", description = "Extension to append to virtual resources to make caching possible")
