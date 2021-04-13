@@ -27,7 +27,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.sling.dynamicinclude.generator.IncludeGenerator;
+import org.apache.sling.api.SlingHttpServletRequest;
+import org.apache.sling.dynamicinclude.api.IncludeGenerator;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -69,7 +70,7 @@ public class JsiGenerator implements IncludeGenerator {
     }
 
     @Override
-    public String getInclude(String url) {
+    public String getInclude(SlingHttpServletRequest request, String url) {
         if (template == null) {
             throw new IllegalStateException("JSI generator hasn't be initialized");
         }

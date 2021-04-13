@@ -38,7 +38,6 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.Designate;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
-import org.osgi.service.metatype.annotations.Option;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,17 +65,13 @@ public class Configuration {
       @AttributeDefinition(name="Resource types", description="Filter will replace components with selected resource types", cardinality = Integer.MAX_VALUE)
       String include$_$filter_config_resource$_$types() default "";
       
-      @AttributeDefinition(name = "Include type", description = "Type of generated include tags", options = {
-          @Option(label = "Apache SSI", value = "SSI"),
-          @Option(label = "ESI", value = "ESI"),
-          @Option(label = "Javascript", value = "JSI")
-      })
+      @AttributeDefinition(name = "Include type", description = "Type of generated include tags")
       String include$_$filter_config_include$_$type() default "SSI";
       
       @AttributeDefinition(name="Add comment", description = "Add comment to included components")
       boolean include$_$filter_config_add__comment() default false;
       
-      @AttributeDefinition(name = "Filter selector", description = "Selector used to mark included resources")
+      @AttributeDefinition(name = "Filter selector", description = "Selector used to mark included resources. The Built in option are 'SSI','ESI' and 'JSI'")
       String include$_$filter_config_selector() default "nocache";
 
       @AttributeDefinition(name = "Extension", description = "Extension to append to virtual resources to make caching possible")
