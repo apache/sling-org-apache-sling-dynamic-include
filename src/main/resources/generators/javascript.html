@@ -18,20 +18,21 @@
 -->
 <div id="${uniqueId}">
     <script type="text/javascript">
-        if (window.XMLHttpRequest) {
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', encodeURI("${url}"));
-            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-            xhr.timeout = 10000;
-            xhr.onload = function () {
-                if (xhr.status >= 200 && xhr.status < 300) {
-                    var elemId = document.getElementById('${uniqueId}');
-                    if (elemId) elemId.innerHTML = xhr.responseText;
-                }
-            };
-            xhr.send();
-        }
-
+		(function () {
+            if (window.XMLHttpRequest) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', encodeURI("${url}"));
+                xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                xhr.timeout = 10000;
+                xhr.onload = function () {
+                    if (xhr.status >= 200 && xhr.status < 300) {
+                        var elemId = document.getElementById('${uniqueId}');
+                        if (elemId) elemId.innerHTML = xhr.responseText;
+                    }
+                };
+                xhr.send();
+            }
+		})();
     </script>
     <noscript>Your browser does not support JavaScript. Some components may not be visible.</noscript>
 </div>
