@@ -27,7 +27,12 @@
                 xhr.onload = function () {
                     if (xhr.status >= 200 && xhr.status < 300) {
                         var elemId = document.getElementById('${uniqueId}');
-                        if (elemId) elemId.innerHTML = xhr.responseText;
+                        if (elemId) {
+                            var resultDiv = document.createElement('div');
+                            resultDiv.innerHTML = xhr.responseText;
+                            elemId.innerHTML = '';
+                            elemId.appendChild(resultDiv);
+						}
                     }
                 };
                 xhr.send();
