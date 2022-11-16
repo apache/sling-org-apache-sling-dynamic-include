@@ -22,9 +22,6 @@ package org.apache.sling.dynamicinclude.util;
 import org.apache.sling.api.SlingHttpServletRequest;
 
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class RequestHelperUtil {
 
