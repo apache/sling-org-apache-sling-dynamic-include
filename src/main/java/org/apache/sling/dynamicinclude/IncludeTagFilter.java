@@ -19,20 +19,6 @@
 
 package org.apache.sling.dynamicinclude;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Collection;
-import java.util.Enumeration;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
@@ -41,6 +27,7 @@ import org.apache.sling.api.resource.ResourceUtil;
 import org.apache.sling.dynamicinclude.api.IncludeGenerator;
 import org.apache.sling.dynamicinclude.generator.IncludeGeneratorWhiteboard;
 import org.apache.sling.dynamicinclude.impl.UrlBuilder;
+import org.apache.sling.dynamicinclude.util.RequestHelperUtil;
 import org.apache.sling.servlets.annotations.SlingServletFilter;
 import org.apache.sling.servlets.annotations.SlingServletFilterScope;
 import org.osgi.framework.Constants;
@@ -49,144 +36,144 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.URI;
+import java.net.URISyntaxException;
+
 @SlingServletFilter(scope = SlingServletFilterScope.INCLUDE)
-@Component(property = { Constants.SERVICE_RANKING + ":Integer=-500"} )
+@Component(property = {Constants.SERVICE_RANKING + ":Integer=-500"})
 public class IncludeTagFilter implements Filter {
 
-    private static final Logger LOG = LoggerFactory.getLogger(IncludeTagFilter.class);
+	private static final Logger LOG = LoggerFactory.getLogger(IncludeTagFilter.class);
 
-    private static final String COMMENT = "<!-- SDI include (path: %s, resourceType: %s) -->\n";
+	private static final String COMMENT = "<!-- SDI include (path: %s, resourceType: %s) -->\n";
 
-    @Reference
-    private ConfigurationWhiteboard configurationWhiteboard;
+	@Reference
+	private ConfigurationWhiteboard configurationWhiteboard;
 
-    @Reference
-    private IncludeGeneratorWhiteboard generatorWhiteboard;
+	@Reference
+	private IncludeGeneratorWhiteboard generatorWhiteboard;
 
-    @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
-            ServletException {
-        final SlingHttpServletRequest slingRequest = (SlingHttpServletRequest) request;
-        final String resourceType = slingRequest.getResource().getResourceType();
+	@Override
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
+			ServletException {
+		final SlingHttpServletRequest slingRequest = (SlingHttpServletRequest) request;
+		final String resourceType = slingRequest.getResource().getResourceType();
 
-        final Configuration config = configurationWhiteboard.getConfiguration(slingRequest, resourceType);
-        if (config == null) {
-            chain.doFilter(request, response);
-            return;
-        }
+		final Configuration config = configurationWhiteboard.getConfiguration(slingRequest, resourceType);
+		if (config == null) {
+			chain.doFilter(request, response);
+			return;
+		}
 
-        final IncludeGenerator generator = generatorWhiteboard.getGenerator(config.getIncludeTypeName());
-        if (generator == null) {
-            LOG.error("Invalid generator: " + config.getIncludeTypeName());
-            chain.doFilter(request, response);
-            return;
-        }
+		final IncludeGenerator generator = generatorWhiteboard.getGenerator(config.getIncludeTypeName());
+		if (generator == null) {
+			LOG.error("Invalid generator: " + config.getIncludeTypeName());
+			chain.doFilter(request, response);
+			return;
+		}
 
-        final PrintWriter writer = response.getWriter();
-        final String url = getUrl(config, slingRequest);
-        if (url == null) {
-            chain.doFilter(request, response);
-            return;
-        }
+		final PrintWriter writer = response.getWriter();
+		final String url = getUrl(config, slingRequest);
+		if (url == null) {
+			chain.doFilter(request, response);
+			return;
+		}
 
-        if (config.getAddComment()) {
-            writer.append(String.format(COMMENT, StringEscapeUtils.escapeHtml4(url), resourceType));
-        }
+		if (config.getAddComment()) {
+			writer.append(String.format(COMMENT, StringEscapeUtils.escapeHtml4(url), resourceType));
+		}
 
-        // Only write the includes markup if the required, configurable request
-        // header is present
-        if (shouldWriteIncludes(config, slingRequest)) {
-            String include = generator.getInclude(slingRequest,url);
-            LOG.debug(include);
-            writer.append(include);
-        } else {
-            chain.doFilter(request, response);
-        }
-    }
+		// Only write the includes markup if the required, configurable request
+		// header is present
+		if (shouldWriteIncludes(config, slingRequest)) {
+			String include = generator.getInclude(slingRequest, url);
+			LOG.debug(include);
+			writer.append(include);
+		} else {
+			chain.doFilter(request, response);
+		}
+	}
 
-    private boolean shouldWriteIncludes(Configuration config, SlingHttpServletRequest request) {
-        // Do not skip GET requests when DisableIgnoreUrlParams set to true.
-        if (!config.isDisableIgnoreUrlParams() && requestHasParameters(config.getIgnoreUrlParams(), request)) {
-            return false;
-        }
-        final String requiredHeader = config.getRequiredHeader();
-        return StringUtils.isBlank(requiredHeader) || containsHeader(requiredHeader, request);
-    }
+	protected boolean shouldWriteIncludes(Configuration config, SlingHttpServletRequest request) {
+		// Do not skip GET requests when DisableIgnoreUrlParams set to true.
+		if (!config.isDisableIgnoreUrlParams() && RequestHelperUtil.requestHasNonIgnoredParameters(config.getIgnoreUrlParams(), request)) {
+			return false;
+		}
+		final String requiredHeader = config.getRequiredHeader();
+		return StringUtils.isBlank(requiredHeader) || containsHeader(requiredHeader, request);
+	}
 
-    private boolean requestHasParameters(Collection<String> ignoreUrlParams, SlingHttpServletRequest request) {
-        final Enumeration<?> paramNames = request.getParameterNames();
-        while (paramNames.hasMoreElements()) {
-            final String paramName = (String) paramNames.nextElement();
-            if (!ignoreUrlParams.contains(paramName)) {
-                return true;
-            }
-        }
-        return false;
-    }
+	private boolean containsHeader(String requiredHeader, SlingHttpServletRequest request) {
+		final String name, expectedValue;
+		if (StringUtils.contains(requiredHeader, '=')) {
+			final String[] split = StringUtils.split(requiredHeader, '=');
+			name = split[0];
+			expectedValue = split[1];
+		} else {
+			name = requiredHeader;
+			expectedValue = null;
+		}
 
-    private boolean containsHeader(String requiredHeader, SlingHttpServletRequest request) {
-        final String name, expectedValue;
-        if (StringUtils.contains(requiredHeader, '=')) {
-            final String split[] = StringUtils.split(requiredHeader, '=');
-            name = split[0];
-            expectedValue = split[1];
-        } else {
-            name = requiredHeader;
-            expectedValue = null;
-        }
+		final String actualValue = request.getHeader(name);
+		if (actualValue == null) {
+			return false;
+		} else if (expectedValue == null) {
+			return true;
+		} else {
+			return actualValue.equalsIgnoreCase(expectedValue);
+		}
+	}
 
-        final String actualValue = request.getHeader(name);
-        if (actualValue == null) {
-            return false;
-        } else if (expectedValue == null) {
-            return true;
-        } else {
-            return actualValue.equalsIgnoreCase(expectedValue);
-        }
-    }
+	private String getUrl(Configuration config, SlingHttpServletRequest request) {
+		String url = buildUrl(config, request);
+		if (config.isRewritePath()) {
+			url = removeQuestionMark(url);
+			url = request.getResourceResolver().map(request, url);
+		} else {
+			url = encodeJcrContentPart(url);
+			try {
+				url = new URI(null, null, url, null).toASCIIString();
+			} catch (URISyntaxException e) {
+				LOG.error("Include url is in the wrong format", e);
+				return null;
+			}
+		}
 
-    private String getUrl(Configuration config, SlingHttpServletRequest request) {
-        String url = buildUrl(config, request);
-        if (config.isRewritePath()) {
-            url = removeQuestionMark(url);
-            url = request.getResourceResolver().map(request, url);
-        } else {
-            url = encodeJcrContentPart(url);
-            try {
-                url = new URI(null, null, url, null).toASCIIString();
-            } catch (URISyntaxException e) {
-                LOG.error("Include url is in the wrong format", e);
-                return null;
-            }
-        }
+		return url;
+	}
 
-        return url;
-    }
+	private String buildUrl(Configuration config, SlingHttpServletRequest request) {
+		final Resource resource = request.getResource();
 
-    private String buildUrl(Configuration config, SlingHttpServletRequest request) {
-        final Resource resource = request.getResource();
+		final boolean synthetic = ResourceUtil.isSyntheticResource(request.getResource());
+		return UrlBuilder.buildUrl(config.getIncludeSelector(), resource.getResourceType(), synthetic, config, request.getRequestPathInfo());
+	}
 
-        final boolean synthetic = ResourceUtil.isSyntheticResource(request.getResource());
-        return UrlBuilder.buildUrl(config.getIncludeSelector(), resource.getResourceType(), synthetic, config, request.getRequestPathInfo());
-    }
+	private static String sanitize(String path) {
+		return StringUtils.defaultString(path);
+	}
 
-    private static String sanitize(String path) {
-        return StringUtils.defaultString(path);
-    }
+	private static String encodeJcrContentPart(String url) {
+		return url.replace("jcr:content", "_jcr_content");
+	}
 
-    private static String encodeJcrContentPart(String url) {
-        return url.replace("jcr:content", "_jcr_content");
-    }
+	private static String removeQuestionMark(String url) {
+		return url.replaceAll("[?]", "");
+	}
 
-    private static String removeQuestionMark(String url) {
-        return url.replaceAll("[?]", "");
-    }
+	@Override
+	public void init(FilterConfig filterConfig) throws ServletException {
+	}
 
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-    }
-
-    @Override
-    public void destroy() {
-    }
+	@Override
+	public void destroy() {
+	}
 }
