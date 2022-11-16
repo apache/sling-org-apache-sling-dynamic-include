@@ -114,7 +114,7 @@ public class IncludeTagFilter implements Filter {
     private boolean containsHeader(String requiredHeader, SlingHttpServletRequest request) {
         final String name, expectedValue;
         if (StringUtils.contains(requiredHeader, '=')) {
-            final String[] split = StringUtils.split(requiredHeader, '=');
+            final String split[] = StringUtils.split(requiredHeader, '=');
             name = split[0];
             expectedValue = split[1];
         } else {

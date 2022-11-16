@@ -28,6 +28,10 @@ public class RequestHelperUtil {
 	private static final String STAR_WILDCARD_APACHE_DISPATCHER_CONFIG_STYLE = "*";
 	private static final String STAR_WILDCARD_JAVA_STYLE = "(.*)";
 
+	private RequestHelperUtil() {
+		// private constructor to prevent instance creation of util classes
+	}
+
 	/**
 	 * Checks if a request contains any parameters that are not defined in the ignoreUrlParams.
 	 * Wildcards as they are possible to configure on Apache-Dispatcher, are also properly checked.
@@ -42,23 +46,19 @@ public class RequestHelperUtil {
 	}
 
 	private static boolean containsGivenExactParameterOrWildcardParameter(Collection<String> ignoreUrlParameters, String requestParameter) {
-		boolean containsGivenParameter = false;
-
 		for (String ignoreUrlParameter : ignoreUrlParameters) {
 			if (ignoreUrlParameter.contains(STAR_WILDCARD_APACHE_DISPATCHER_CONFIG_STYLE)) {
 				String ignoreUrlParameterRegex = ignoreUrlParameter.replace(STAR_WILDCARD_APACHE_DISPATCHER_CONFIG_STYLE, STAR_WILDCARD_JAVA_STYLE);
 
 				if (requestParameter.matches(ignoreUrlParameterRegex)) {
-					containsGivenParameter = true;
-					break;
+					return true;
 				}
 			} else if (requestParameter.equals(ignoreUrlParameter)) {
-				containsGivenParameter = true;
-				break;
+				return true;
 			}
 		}
 
-		return containsGivenParameter;
+		return false;
 	}
 
 }
