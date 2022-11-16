@@ -50,9 +50,11 @@ public class RequestHelperUtil {
 
 				if (requestParameter.matches(ignoreUrlParameterRegex)) {
 					containsGivenParameter = true;
+					break;
 				}
 			} else if (requestParameter.equals(ignoreUrlParameter)) {
 				containsGivenParameter = true;
+				break;
 			}
 		}
 
