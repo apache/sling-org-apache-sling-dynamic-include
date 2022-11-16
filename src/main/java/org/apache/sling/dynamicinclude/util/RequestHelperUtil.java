@@ -40,35 +40,26 @@ public class RequestHelperUtil {
 	 * @return true if there was any parameter that is not defined on the ignoreUrlsParams-Collection, otherwise false
 	 */
 	public static boolean requestHasNonIgnoredParameters(Collection<String> ignoreUrlParams, SlingHttpServletRequest request) {
-		final Set<String> nonWildCardIgnoreUrlParams = ignoreUrlParams.stream()
-				.filter(urlParam -> !urlParam.contains(STAR_WILDCARD_APACHE_DISPATCHER_CONFIG_STYLE))
-				.collect(Collectors.toSet());
+		return request.getParameterMap().keySet().stream()
+				.anyMatch(urlParameter -> !containsGivenExactParameterOrWildcardParameter(ignoreUrlParams, urlParameter));
+	}
 
-		final Set<String> wildCardIgnoreUrlParams = ignoreUrlParams.stream()
-				.filter(urlParam -> urlParam.contains(STAR_WILDCARD_APACHE_DISPATCHER_CONFIG_STYLE))
-				.collect(Collectors.toSet());
+	private static boolean containsGivenExactParameterOrWildcardParameter(Collection<String> ignoreUrlParameters, String requestParameter) {
+		boolean containsGivenParameter = false;
 
-		// Need a copy of parameterMap-keyset as we are about to modify the collection. Modifying the real keySet should never be done.
-		Set<String> tempParamNames = new HashSet<>(request.getParameterMap().keySet());
-		tempParamNames.removeAll(nonWildCardIgnoreUrlParams);
+		for (String ignoreUrlParameter : ignoreUrlParameters) {
+			if (ignoreUrlParameter.contains(STAR_WILDCARD_APACHE_DISPATCHER_CONFIG_STYLE)) {
+				String ignoreUrlParameterRegex = ignoreUrlParameter.replace(STAR_WILDCARD_APACHE_DISPATCHER_CONFIG_STYLE, STAR_WILDCARD_JAVA_STYLE);
 
-		if (!tempParamNames.isEmpty() && !wildCardIgnoreUrlParams.isEmpty()) {
-			Set<String> allWildCardMatchingParams = new HashSet<>();
-
-			for (String wildCardIgnoreUrlParam : wildCardIgnoreUrlParams) {
-				String ignoreUrlParamRegex = wildCardIgnoreUrlParam.replace(STAR_WILDCARD_APACHE_DISPATCHER_CONFIG_STYLE, STAR_WILDCARD_JAVA_STYLE);
-
-				Set<String> requestParametersMatchingThisWildCard = tempParamNames.stream()
-						.filter(requestParameter -> requestParameter.matches(ignoreUrlParamRegex))
-						.collect(Collectors.toSet());
-
-				allWildCardMatchingParams.addAll(requestParametersMatchingThisWildCard);
+				if (requestParameter.matches(ignoreUrlParameterRegex)) {
+					containsGivenParameter = true;
+				}
+			} else if (requestParameter.equals(ignoreUrlParameter)) {
+				containsGivenParameter = true;
 			}
-
-			tempParamNames.removeAll(allWildCardMatchingParams);
 		}
 
-		return tempParamNames.size() > 0;
+		return containsGivenParameter;
 	}
 
 }
