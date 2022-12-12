@@ -33,7 +33,7 @@ public class RequestHelperUtil {
 	 * Checks if a request contains any parameters that are not defined in the ignoreUrlParams.
 	 * Wildcards as they are possible to configure on Apache-Dispatcher, are also properly checked.
 	 *
-	 * @param ignoreUrlParams The list of configured ignoreUrlParams (ignoreUrlParams can be defined with regex-pattern)
+	 * @param ignoreUrlParams The list of configured ignoreUrlParams (regular expressions)
 	 * @param request         The slingRequest whose parameters we want to check
 	 * @return true if there was any parameter that is not defined on the ignoreUrlsParams-Collection, otherwise false
 	 */

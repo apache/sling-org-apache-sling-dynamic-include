@@ -39,16 +39,17 @@ public class RequestHelperUtilTest {
 	private static final String IGNORE_PARAM_REGEX_STAR_WILDCARD = "test-(.*)";
 
 	private SlingHttpServletRequest slingHttpServletRequest;
+	private Collection<String> ignoreUrlParams;
 
 	@Before
 	public void prepareTestData() {
 		slingHttpServletRequest = Mockito.mock(SlingHttpServletRequest.class);
+
+		ignoreUrlParams = new ArrayList<>();
 	}
 
 	@Test
 	public void requestHasParameters_noParametersAtAll() {
-		Collection<String> ignoreUrlParams = new ArrayList<>();
-
 		Mockito.when(slingHttpServletRequest.getParameterMap()).thenReturn(new HashMap<>());
 
 		Assert.assertFalse(RequestHelperUtil.requestHasNonIgnoredParameters(ignoreUrlParams, slingHttpServletRequest));
@@ -56,7 +57,6 @@ public class RequestHelperUtilTest {
 
 	@Test
 	public void requestHasParameters_onlyIgnoredParameters_withoutWildcards() {
-		Collection<String> ignoreUrlParams = new ArrayList<>();
 		ignoreUrlParams.add(TEST_PARAM_NAME);
 
 		Map<String, String[]> parameterMap = new HashMap<>();
@@ -69,7 +69,6 @@ public class RequestHelperUtilTest {
 
 	@Test
 	public void requestHasParameters_onlyIgnoredParameters_withWildcards() {
-		Collection<String> ignoreUrlParams = new ArrayList<>();
 		ignoreUrlParams.add(IGNORE_PARAM_REGEX_STAR_WILDCARD);
 		ignoreUrlParams.add("hello");
 
@@ -84,7 +83,6 @@ public class RequestHelperUtilTest {
 
 	@Test
 	public void requestHasParameters_hasParametersThatAreNotIgnored_withoutWildcards() {
-		Collection<String> ignoreUrlParams = new ArrayList<>();
 		ignoreUrlParams.add(TEST_PARAM_NAME);
 
 		Map<String, String[]> parameterMap = new HashMap<>();
@@ -98,7 +96,6 @@ public class RequestHelperUtilTest {
 
 	@Test
 	public void requestHasParameters_hasParametersThatAreNotIgnored_withWildcards() {
-		Collection<String> ignoreUrlParams = new ArrayList<>();
 		ignoreUrlParams.add(IGNORE_PARAM_REGEX_STAR_WILDCARD);
 
 		Map<String, String[]> parameterMap = new HashMap<>();
@@ -112,7 +109,6 @@ public class RequestHelperUtilTest {
 
 	@Test
 	public void requestHasParameters_specificRegex_hasIgnoredParameters() {
-		Collection<String> ignoreUrlParams = new ArrayList<>();
 		ignoreUrlParams.add("hello-[0-9]-world");
 
 		Map<String, String[]> parameterMap = new HashMap<>();
@@ -127,7 +123,6 @@ public class RequestHelperUtilTest {
 
 	@Test
 	public void requestHasParameters_specificRegex_hasNoIgnoredParameters() {
-		Collection<String> ignoreUrlParams = new ArrayList<>();
 		ignoreUrlParams.add("hello-[0-9]-world");
 
 		Map<String, String[]> parameterMap = new HashMap<>();
