@@ -42,7 +42,7 @@ Filter is delivered as a standard OSGi bundle. SDI is configured via the configu
 * **Component TTL** - time to live in seconds, set for rendered component (require Dispatcher 4.1.11+)
 * **Required header** - SDI will be enabled only if the configured header is present in the request. By default it's `Server-Agent=Communique-Dispatcher` header, added by the AEM dispatcher. You may enter just the header name only or the name and the value split with `=`.
 * **Disable Ignore URL params check** - SDI will process all requests and discard ignore URL params check including requests with GET params.
-* **Ignore URL params** - SDI normally skips all requests containing any GET parameters. This option allows to set a list of parameters that should be ignored in the test. See the [Ignoring URL parameters](https://docs.adobe.com/docs/en/dispatcher/disp-config.html#Ignoring%20URL%20Parameters) section in the dispatcher documentation.
+* **Ignore URL params** - SDI normally skips all requests containing any GET parameters. This option allows to set a list of parameters that should be ignored in the test. (Supports Java Regex Pattern e.g. "**tracking-(.*)**" or "**param-[0-9]**") See the [Ignoring URL parameters](https://docs.adobe.com/docs/en/dispatcher/disp-config.html#Ignoring%20URL%20Parameters) section in the dispatcher documentation.
 * **Include path rewriting** -- enable rewriting link (according to sling mappings) that is used for dynamic content including.
 * **Append suffix** -- ensures that the suffix of the parent request is included with the dynamic include.
 

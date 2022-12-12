@@ -23,8 +23,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collection;
-import java.util.Enumeration;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -41,6 +39,7 @@ import org.apache.sling.api.resource.ResourceUtil;
 import org.apache.sling.dynamicinclude.api.IncludeGenerator;
 import org.apache.sling.dynamicinclude.generator.IncludeGeneratorWhiteboard;
 import org.apache.sling.dynamicinclude.impl.UrlBuilder;
+import org.apache.sling.dynamicinclude.util.RequestHelperUtil;
 import org.apache.sling.servlets.annotations.SlingServletFilter;
 import org.apache.sling.servlets.annotations.SlingServletFilterScope;
 import org.osgi.framework.Constants;
@@ -106,22 +105,11 @@ public class IncludeTagFilter implements Filter {
 
     private boolean shouldWriteIncludes(Configuration config, SlingHttpServletRequest request) {
         // Do not skip GET requests when DisableIgnoreUrlParams set to true.
-        if (!config.isDisableIgnoreUrlParams() && requestHasParameters(config.getIgnoreUrlParams(), request)) {
+        if (!config.isDisableIgnoreUrlParams() && RequestHelperUtil.requestHasNonIgnoredParameters(config.getIgnoreUrlParams(), request)) {
             return false;
         }
         final String requiredHeader = config.getRequiredHeader();
         return StringUtils.isBlank(requiredHeader) || containsHeader(requiredHeader, request);
-    }
-
-    private boolean requestHasParameters(Collection<String> ignoreUrlParams, SlingHttpServletRequest request) {
-        final Enumeration<?> paramNames = request.getParameterNames();
-        while (paramNames.hasMoreElements()) {
-            final String paramName = (String) paramNames.nextElement();
-            if (!ignoreUrlParams.contains(paramName)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private boolean containsHeader(String requiredHeader, SlingHttpServletRequest request) {
