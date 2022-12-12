@@ -40,17 +40,19 @@ public class RequestHelperUtilTest {
 
 	private SlingHttpServletRequest slingHttpServletRequest;
 	private Collection<String> ignoreUrlParams;
+	private Map<String, String[]> parameterMap;
 
 	@Before
 	public void prepareTestData() {
 		slingHttpServletRequest = Mockito.mock(SlingHttpServletRequest.class);
 
 		ignoreUrlParams = new ArrayList<>();
+		parameterMap = new HashMap<>();
 	}
 
 	@Test
 	public void requestHasParameters_noParametersAtAll() {
-		Mockito.when(slingHttpServletRequest.getParameterMap()).thenReturn(new HashMap<>());
+		Mockito.when(slingHttpServletRequest.getParameterMap()).thenReturn(parameterMap);
 
 		Assert.assertFalse(RequestHelperUtil.requestHasNonIgnoredParameters(ignoreUrlParams, slingHttpServletRequest));
 	}
@@ -59,7 +61,6 @@ public class RequestHelperUtilTest {
 	public void requestHasParameters_onlyIgnoredParameters_withoutWildcards() {
 		ignoreUrlParams.add(TEST_PARAM_NAME);
 
-		Map<String, String[]> parameterMap = new HashMap<>();
 		parameterMap.put(TEST_PARAM_NAME, new String[] {});
 
 		Mockito.when(slingHttpServletRequest.getParameterMap()).thenReturn(parameterMap);
@@ -72,7 +73,6 @@ public class RequestHelperUtilTest {
 		ignoreUrlParams.add(IGNORE_PARAM_REGEX_STAR_WILDCARD);
 		ignoreUrlParams.add("hello");
 
-		Map<String, String[]> parameterMap = new HashMap<>();
 		parameterMap.put(TEST_PARAM_NAME, new String[] {});
 		parameterMap.put("hello", new String[] {});
 
@@ -85,7 +85,6 @@ public class RequestHelperUtilTest {
 	public void requestHasParameters_hasParametersThatAreNotIgnored_withoutWildcards() {
 		ignoreUrlParams.add(TEST_PARAM_NAME);
 
-		Map<String, String[]> parameterMap = new HashMap<>();
 		parameterMap.put(TEST_PARAM_NAME, new String[] {});
 		parameterMap.put("some-other-param", new String[] {});
 
@@ -98,7 +97,6 @@ public class RequestHelperUtilTest {
 	public void requestHasParameters_hasParametersThatAreNotIgnored_withWildcards() {
 		ignoreUrlParams.add(IGNORE_PARAM_REGEX_STAR_WILDCARD);
 
-		Map<String, String[]> parameterMap = new HashMap<>();
 		parameterMap.put(TEST_PARAM_NAME, new String[] {});
 		parameterMap.put("some-other-param", new String[] {});
 
@@ -111,7 +109,6 @@ public class RequestHelperUtilTest {
 	public void requestHasParameters_specificRegex_hasIgnoredParameters() {
 		ignoreUrlParams.add("hello-[0-9]-world");
 
-		Map<String, String[]> parameterMap = new HashMap<>();
 		parameterMap.put(TEST_PARAM_NAME, new String[] {});
 		parameterMap.put("hello-1-world", new String[] {});
 		parameterMap.put("hello-2-world", new String[] {});
@@ -125,7 +122,6 @@ public class RequestHelperUtilTest {
 	public void requestHasParameters_specificRegex_hasNoIgnoredParameters() {
 		ignoreUrlParams.add("hello-[0-9]-world");
 
-		Map<String, String[]> parameterMap = new HashMap<>();
 		parameterMap.put("hello-1-world", new String[] {});
 		parameterMap.put("hello-2-world", new String[] {});
 		parameterMap.put("hello-3-world", new String[] {});
