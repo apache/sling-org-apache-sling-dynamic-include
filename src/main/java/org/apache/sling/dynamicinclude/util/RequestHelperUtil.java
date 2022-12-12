@@ -39,10 +39,10 @@ public class RequestHelperUtil {
 	 */
 	public static boolean requestHasNonIgnoredParameters(Collection<String> ignoreUrlParams, SlingHttpServletRequest request) {
 		return request.getParameterMap().keySet().stream()
-				.anyMatch(urlParameter -> !containsGivenExactParameterOrWildcardParameter(ignoreUrlParams, urlParameter));
+				.anyMatch(urlParameter -> !matchesRegularExpressionIgnoreUrlParameter(ignoreUrlParams, urlParameter));
 	}
 
-	private static boolean containsGivenExactParameterOrWildcardParameter(Collection<String> ignoreUrlParameters, String requestParameter) {
+	private static boolean matchesRegularExpressionIgnoreUrlParameter(Collection<String> ignoreUrlParameters, String requestParameter) {
 		for (String ignoreUrlParameter : ignoreUrlParameters) {
 			if (requestParameter.matches(ignoreUrlParameter)) {
 				return true;
