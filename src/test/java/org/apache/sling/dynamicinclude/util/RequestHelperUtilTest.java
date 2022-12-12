@@ -36,6 +36,7 @@ import java.util.Map;
 public class RequestHelperUtilTest {
 
 	private static final String TEST_PARAM_NAME = "test-param";
+	private static final String IGNORE_PARAM_REGEX_STAR_WILDCARD = "test-(.*)";
 
 	private SlingHttpServletRequest slingHttpServletRequest;
 
@@ -69,7 +70,7 @@ public class RequestHelperUtilTest {
 	@Test
 	public void requestHasParameters_onlyIgnoredParameters_withWildcards() {
 		Collection<String> ignoreUrlParams = new ArrayList<>();
-		ignoreUrlParams.add("test-*");
+		ignoreUrlParams.add(IGNORE_PARAM_REGEX_STAR_WILDCARD);
 		ignoreUrlParams.add("hello");
 
 		Map<String, String[]> parameterMap = new HashMap<>();
@@ -98,7 +99,7 @@ public class RequestHelperUtilTest {
 	@Test
 	public void requestHasParameters_hasParametersThatAreNotIgnored_withWildcards() {
 		Collection<String> ignoreUrlParams = new ArrayList<>();
-		ignoreUrlParams.add("test-*");
+		ignoreUrlParams.add(IGNORE_PARAM_REGEX_STAR_WILDCARD);
 
 		Map<String, String[]> parameterMap = new HashMap<>();
 		parameterMap.put(TEST_PARAM_NAME, new String[] {});
@@ -107,6 +108,36 @@ public class RequestHelperUtilTest {
 		Mockito.when(slingHttpServletRequest.getParameterMap()).thenReturn(parameterMap);
 
 		Assert.assertTrue(RequestHelperUtil.requestHasNonIgnoredParameters(ignoreUrlParams, slingHttpServletRequest));
+	}
+
+	@Test
+	public void requestHasParameters_specificRegex_hasIgnoredParameters() {
+		Collection<String> ignoreUrlParams = new ArrayList<>();
+		ignoreUrlParams.add("hello-[0-9]-world");
+
+		Map<String, String[]> parameterMap = new HashMap<>();
+		parameterMap.put(TEST_PARAM_NAME, new String[] {});
+		parameterMap.put("hello-1-world", new String[] {});
+		parameterMap.put("hello-2-world", new String[] {});
+
+		Mockito.when(slingHttpServletRequest.getParameterMap()).thenReturn(parameterMap);
+
+		Assert.assertTrue(RequestHelperUtil.requestHasNonIgnoredParameters(ignoreUrlParams, slingHttpServletRequest));
+	}
+
+	@Test
+	public void requestHasParameters_specificRegex_hasNoIgnoredParameters() {
+		Collection<String> ignoreUrlParams = new ArrayList<>();
+		ignoreUrlParams.add("hello-[0-9]-world");
+
+		Map<String, String[]> parameterMap = new HashMap<>();
+		parameterMap.put("hello-1-world", new String[] {});
+		parameterMap.put("hello-2-world", new String[] {});
+		parameterMap.put("hello-3-world", new String[] {});
+
+		Mockito.when(slingHttpServletRequest.getParameterMap()).thenReturn(parameterMap);
+
+		Assert.assertFalse(RequestHelperUtil.requestHasNonIgnoredParameters(ignoreUrlParams, slingHttpServletRequest));
 	}
 
 }

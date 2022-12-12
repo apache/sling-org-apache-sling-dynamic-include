@@ -25,9 +25,6 @@ import java.util.Collection;
 
 public class RequestHelperUtil {
 
-	private static final String STAR_WILDCARD_APACHE_DISPATCHER_CONFIG_STYLE = "*";
-	private static final String STAR_WILDCARD_JAVA_STYLE = "(.*)";
-
 	private RequestHelperUtil() {
 		// private constructor to prevent instance creation of util classes
 	}
@@ -36,7 +33,7 @@ public class RequestHelperUtil {
 	 * Checks if a request contains any parameters that are not defined in the ignoreUrlParams.
 	 * Wildcards as they are possible to configure on Apache-Dispatcher, are also properly checked.
 	 *
-	 * @param ignoreUrlParams The list of configured ignoreUrlParams
+	 * @param ignoreUrlParams The list of configured ignoreUrlParams (ignoreUrlParams can be defined with regex-pattern)
 	 * @param request         The slingRequest whose parameters we want to check
 	 * @return true if there was any parameter that is not defined on the ignoreUrlsParams-Collection, otherwise false
 	 */
@@ -47,13 +44,7 @@ public class RequestHelperUtil {
 
 	private static boolean containsGivenExactParameterOrWildcardParameter(Collection<String> ignoreUrlParameters, String requestParameter) {
 		for (String ignoreUrlParameter : ignoreUrlParameters) {
-			if (ignoreUrlParameter.contains(STAR_WILDCARD_APACHE_DISPATCHER_CONFIG_STYLE)) {
-				String ignoreUrlParameterRegex = ignoreUrlParameter.replace(STAR_WILDCARD_APACHE_DISPATCHER_CONFIG_STYLE, STAR_WILDCARD_JAVA_STYLE);
-
-				if (requestParameter.matches(ignoreUrlParameterRegex)) {
-					return true;
-				}
-			} else if (requestParameter.equals(ignoreUrlParameter)) {
+			if (requestParameter.matches(ignoreUrlParameter)) {
 				return true;
 			}
 		}
