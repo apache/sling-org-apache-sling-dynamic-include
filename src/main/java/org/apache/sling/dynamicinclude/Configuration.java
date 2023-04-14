@@ -68,13 +68,13 @@ public class Configuration {
           type = AttributeType.STRING)
       String[] include$_$filter_config_resource$_$types() default {};
       
-      @AttributeDefinition(name = "Include type", description = "Type of generated include tags")
+      @AttributeDefinition(name = "Include type", description = "Type of generated include tags. The Built-in option are 'SSI','ESI' and 'JSI'. Must match one of the IncludeGenerator service's type")
       String include$_$filter_config_include$_$type() default "SSI";
       
       @AttributeDefinition(name="Add comment", description = "Add comment to included components")
       boolean include$_$filter_config_add__comment() default false;
       
-      @AttributeDefinition(name = "Filter selector", description = "Selector used to mark included resources. The Built in option are 'SSI','ESI' and 'JSI'")
+      @AttributeDefinition(name = "Filter selector", description = "Selector used to mark included resources")
       String include$_$filter_config_selector() default "nocache";
 
       @AttributeDefinition(name = "Extension", description = "Extension to append to virtual resources to make caching possible")
